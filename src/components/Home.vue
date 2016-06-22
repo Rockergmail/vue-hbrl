@@ -2,7 +2,7 @@
 
 <template>
 <style scoped>
-    html,body{background: #F5F4F9;font-size:16px;}
+    html,body{background: #F5F4F9;}
     
     /*section board*/
     #section-board{background: #DD5555;color:white;padding:1.0rem 1.25rem;}
@@ -19,8 +19,10 @@
     /*section menu*/
     #section-menu{background: white;color:black;overflow: hidden;margin-top:6px;}
     .item{display: block;padding:;font-size: 14px;color:#494949;padding:6px 0;}
+    .item dt{padding:50% 50% 0 0;position: relative;}
     
-    .menu-icon{width:50%;height:50%;}
+    .container-img{min-height:40px;min-width:76px;}
+    .menu-icon{width:50%;position: absolute;left:0;right:0;margin:0 auto;top:0;}
     .menu0,.menu2,.menu3,.menu1{border-top:0;}
     .menu3,.menu7{border-right:0;}
 </style>
@@ -59,6 +61,7 @@
                 <a class="item" v-link="menu.path">
                     <dl>
                         <dt>
+                            <div class="img-placeholder"></div>
                             <img :src="menu.pic" class="menu-icon">
                         </dt>
                         <dd class="menu-title">
@@ -79,8 +82,6 @@ import xHeader from "vux/src/components/x-header/index.vue"
 import flexbox from "vux/src/components/flexbox/index.vue"
 import flexboxItem from "vux/src/components/flexbox-item/index.vue"
 import countup from "vux/src/components/countup/index.vue"
-// require("vux/src/components/x-header");
-// require("vux/src/components/flexbox/index.vue");
 
 module.exports = {
     name: "home",
@@ -90,32 +91,17 @@ module.exports = {
         "flexbox-item": flexboxItem,
         "countup": countup
     },
-    // route: {  
-    //     data: function (transition) {
-
-    //         this.$root.showLoading = false
-    //         this.$root.opacity = 0
-    //         this.$root.percent = 100
-            
-    //         setTimeout(
-    //          function(){
-    //              this.$root.showProgress = false
-    //              this.$root.opacity = 1
-    //              this.$root.percent = 0
-    //          }, 1000)
-
-    //         console.log("home");
-    //       }  
-    // },
     route: {
-        waitForData: true
+        data: function(transition) {
+            this.$root.endLoading(this.$loadingRouteData)
+        }
     },
     data: function () {
         return {
             data: {},
             menus: [{
-                    path: "/limit",
-                    pic: "http://www.iconpng.com/download/png/100970",
+                    path: "/timedList",
+                    pic: "http://cdn.hongbaorili.com/wind/static/images/icon/pro.png",
                     title: "限时任务"
                 }, {
                     path: "/deep",
@@ -129,23 +115,25 @@ module.exports = {
                     path: "/apprentice",
                     pic: "http://www.iconpng.com/download/png/100970",
                     title: "徒弟列表"
-                }, {
-                    path: "/income",
-                    pic: "http://www.iconpng.com/download/png/100970",
-                    title: "收入明细"
-                }, {
-                    path: "/pocketmoney",
-                    pic: "http://www.iconpng.com/download/png/100970",
-                    title: "每日红包"
-                }, {
-                    path: "/showoff",
-                    pic: "http://www.iconpng.com/download/png/100970",
-                    title: "激情晒单"
-                }, {
-                    path: "/userinfo",
-                    pic: "http://www.iconpng.com/download/png/100970",
-                    title: "个人中心"
-                }]
+                }
+                // , {
+                //     path: "/income",
+                //     pic: "http://www.iconpng.com/download/png/100970",
+                //     title: "收入明细"
+                // }, {
+                //     path: "/pocketmoney",
+                //     pic: "http://www.iconpng.com/download/png/100970",
+                //     title: "每日红包"
+                // }, {
+                //     path: "/showoff",
+                //     pic: "http://www.iconpng.com/download/png/100970",
+                //     title: "激情晒单"
+                // }, {
+                //     path: "/userinfo",
+                //     pic: "http://www.iconpng.com/download/png/100970",
+                //     title: "个人中心"
+                // }
+                ]
         }
     },
     ready: function () {
@@ -154,7 +142,7 @@ module.exports = {
         }, function (response) {
             alert("Opsss");
         });
-        // console.log(this.$root.route.data)
+        // 这里要用ready而不是route.data，是因为要先检测到它是否打开小助手来登陆
     }
 };
 </script>

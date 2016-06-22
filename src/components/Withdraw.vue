@@ -7,7 +7,7 @@ body{background: #F5F4F9}
 
 #userinfo .vux-flexbox .weui_cell{text-align: center;color:#7b7b7b;}
 
-#panel-incomes{background: white;padding:20px 0px;overflow: hidden;margin-top:24px;margin-bottom: 24px;}
+#panel-incomes{background: white;padding:20px 0px;overflow: hidden;margin:12px 0 24px;}
 #panel-incomes{text-align: center;}
 #panel-incomes img{width:32px;}
 .money{font-size: 14px;color:#999;margin-top: 5px}
@@ -15,6 +15,7 @@ body{background: #F5F4F9}
     color: white;
     background: #a0a0a0;
 }
+.weui_cells{margin-top:8px;}
 </style>
 
 <div id="withdraw">
@@ -109,6 +110,11 @@ import xButton from 'vux/src/components/x-button'
 
 module.exports = {
     name: "withdraw",
+    route: {
+        data: function(transition) {
+            this.$root.endLoading(this.$loadingRouteData)
+        }
+    },
     data: function () {
         return {
             mode: "",

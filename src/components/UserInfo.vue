@@ -48,6 +48,15 @@ module.exports = {
         }
     },
     route: {
+        data: function(transition){
+            return this.$http.post('/mock/userinfo').then(function (response) {
+                this.$root.endLoading(this.$loadingRouteData)
+                return {data: response.data}
+              }, 
+              function (response) {
+                  alert("Opsss");
+              });
+        },
         waitForData: true
     },
     components: {
@@ -65,18 +74,15 @@ module.exports = {
         timing: function () {
             // daojishi
         }
-    },
-    ready: function () {
-        this.$http.post('/mock/userinfo').then(function (response) {
-            this.data = response.data;
-            console.log(this.data)
-        }, function (response) {
-            alert("Opsss");
-        });
     }
+    // ,
+    // ready: function () {
+    //     this.$http.post('/mock/userinfo').then(function (response) {
+    //         this.data = response.data;
+    //         console.log(this.data)
+    //     }, function (response) {
+    //         alert("Opsss");
+    //     });
+    // }
 };
 </script>
-
-<style>
-@import '~vux/dist/vux.css'
-</style>

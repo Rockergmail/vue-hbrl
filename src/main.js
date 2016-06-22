@@ -36,14 +36,28 @@ var router = new VueRouter(),
 	Vue.component("progress", progress);
 	// 路由表
 	router.map({
+		// 首页
 		'/': {
 			component: Vue.extend(Home)
 		},
+		// 限时任务
+		'/timedList': {
+			component: function(resolve){
+				require(['./components/TimedList.vue'], resolve);
+			}
+		},
+		'/timedDetail': {
+			component: function(resolve){
+				require(['./components/TimedDetail.vue'], resolve);
+			}
+		},
+		// 个人信息
 		'/userinfo': {
 			component: function(resolve){
 				require(['./components/UserInfo.vue'], resolve);
 			}
 		},
+		// 提现中心
 		'/withdraw': {
 			component: function(resolve){
 				require(['./components/Withdraw.vue'], resolve);
@@ -54,6 +68,7 @@ var router = new VueRouter(),
 		// 		require(['./components/PocketMoney.vue'], resolve);
 		// 	}
 		// },
+		// 邀请奖励
 		'/invite': {
 			component: function(resolve){
 				require(['./components/Invite.vue'], resolve);
@@ -74,11 +89,7 @@ var router = new VueRouter(),
 				require(['./components/InviteList.vue'], resolve);
 			}
 		},
-		// '/showoff': {
-		// 	component: function(resolve){
-		// 		require(['./components/Showoff.vue'], resolve);
-		// 	}
-		// },
+		// 收入明细
 		'/income': {
 			component: function(resolve){
 				require(['./components/Income.vue'], resolve);
@@ -87,37 +98,15 @@ var router = new VueRouter(),
 	});
 
 
-	// 路由切换前
+	// 路由勾子canUse之前
 	router.beforeEach(function(transition){
-		// 如何跟progress组件通讯？
-		// if (!transition.from.path && transition.to.path !== "/") {
-			router.app.showProgress = true
-			router.app.percent = 30
-		// }
-		    router.app.showLoading = true
-
-		    console.log("before");
-
-		    transition.next()
-
-		    // loading
+		router.app.resetLoading()
+	    transition.next()
 	})
 
-	// 路由切换后
+	// 路由勾子activate之前
 	router.afterEach(function(transition){
-		// if (!transition.from.path && transition.to.path !== "/") {
-			router.app.showLoading = false
-			router.app.opacity = 0
-			router.app.percent = 100
-		// }
-		
-		setTimeout(
-			function(){
-				router.app.showProgress = false
-				router.app.opacity = 1
-				router.app.percent = 0
-			}, 1000)		
-		console.log("after");
+		router.app.startLoading()
 	})
 
 	// 启动路由
@@ -249,9 +238,9 @@ var router = new VueRouter(),
 	// 	// }
 	// })
 
-	// Mock.setup({
-	// 	timeout: 1000
-	// })
+	Mock.setup({
+		timeout: 1000
+	})
 
 	// home
 	Mock.mock('/mock/home', {
