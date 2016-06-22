@@ -112,15 +112,16 @@ module.exports = {
                     pic: "http://www.iconpng.com/download/png/100970",
                     title: "邀请奖励"
                 }, {
-                    path: "/apprentice",
+                    path: "/income",
                     pic: "http://www.iconpng.com/download/png/100970",
-                    title: "徒弟列表"
+                    title: "收入明细"
                 }
                 // , {
-                //     path: "/income",
+                //     path: "/apprentice",
                 //     pic: "http://www.iconpng.com/download/png/100970",
-                //     title: "收入明细"
-                // }, {
+                //     title: "徒弟列表"
+                // }
+                // , {
                 //     path: "/pocketmoney",
                 //     pic: "http://www.iconpng.com/download/png/100970",
                 //     title: "每日红包"

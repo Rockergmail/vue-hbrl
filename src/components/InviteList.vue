@@ -20,7 +20,7 @@
 
     <p :class="{ 'hide': data.lst }">Loading</p>
     <!-- 此处的v-if作用：重新编译　-->
-    <scroller v-if="data.lst" :lock-x="true" :scrollbar-y="true" :height="listHeight" :use-pullup="true"  @pullup:loading="load"　:pullup-config="pullupConfig">
+    <scroller v-if="data.lst" lock-x scrollbar-y :height="listHeight" v-ref:scroller use-pullup  @pullup:loading="load"　:pullup-config="pullupConfig">
 
     <div>
 
@@ -72,6 +72,19 @@ module.exports = {
             }
         }
     },
+    route: {
+        data: function(transition) {
+            return this.$http.post('/mock/invite/list').then(function (response) {
+                this.data = response.data
+                this.$nextTick(function(){
+                  this.$broadcast('scroller:reset', this.$refs.scroller.uuid)
+                  this.$root.endLoading(this.$loadingRouteData)
+                })
+             }, function (response) {
+                 alert("Opsss");
+             });
+        }
+    },
     methods: {
         copyLink: function() {
             alert("copying...");
@@ -80,12 +93,16 @@ module.exports = {
             var _this = this;
             setTimeout(function(){
               _this.$http.post('/mock/invite/list').then(function (response) {
-                   _this.data.lst = _this.data.lst.concat(response.data.lst);
+                   _this.data.lst.push(response.data.lst);
+                   _this.$nextTick(function(){
+                    _this.$broadcast('scroller:reset', uuid)
+                  // this.$root.endLoading(this.$loadingRouteData)
+                })
                }, function (response) {
                    alert("Opsss");
                });
               _this.$broadcast('pullup:reset', uuid)
-            }, 500);
+            }, 600);
         }
     },
     computed: {
@@ -94,15 +111,6 @@ module.exports = {
       }
     },
     ready: function () {
-      var fuckme = document.querySelector("#fuckme");
-      fuckme.ontouchmove = function(){
-          return false;
-      }
-     this.$http.post('/mock/invite/list').then(function (response) {
-          this.data = response.data;
-      }, function (response) {
-          alert("Opsss");
-      });
     }
 };
 </script>

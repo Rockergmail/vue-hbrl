@@ -40,7 +40,7 @@
 
 <scroller lock-x scrollbar-y :height="listHeight" v-ref:scroller use-pullup  @pullup:loading="load"　:pullup-config="pullupConfig">
     <section id="list">
-    <a v-for="m in data.d" v-link="{ 'path': '/fuck' }" class="mission-item" v-cloak="shit">
+    <a v-for="m in data.d" v-link="{ 'path': '/fuck' }" class="mission-item">
     <flexbox :gutter="0">
         <flexbox-item :span="2/10" class="item-icon">
             <img :src="m.imgUrl" width="80%">
@@ -113,7 +113,8 @@ module.exports = {
     data:function () {
         return {
             data: {},
-
+            page: 1,
+            amount: 10
         }
     },
     methods: {
@@ -121,6 +122,7 @@ module.exports = {
             this.currentType = type;
         },
         load (uuid) {
+            this.$http.get
             this.$broadcast('pullup:reset', uuid)
         }
     },
