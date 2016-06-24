@@ -33,6 +33,8 @@
         :right-options="{showMore:false,showRefresh:true,refreshLink: '/mock/home'}"
     >红包日历</x-header>
 
+    <x-popup template="giveup"></x-popup>
+
     <div id="main">
     	<section id="section-board">
             <p id="text-income">

@@ -25,8 +25,8 @@
     /*.weui_progress_inner_bar{background: yellow}*/
     .weui_progress_opr{display: none;}
     .weui_progress_inner_bar.js_progress{
-    	-webkit-transition: width .6s ease-in-out, opacity .8s ease-in;
-    	transition: width .6s ease-in-out, opacity .8s ease-in;
+    	-webkit-transition: width .6s ease-in-out, opacity .6s ease-in;
+    	transition: width .6s ease-in-out, opacity .6s ease-in;
     }
 
     /*Media Query*/
@@ -62,6 +62,7 @@
 <div id="wrapper">
 	<loading :show="showLoading"></loading>
 	<progress :percent.sync="percent" v-if="showProgress" :opacity.sync="opacity"></progress>
+	<x-toast :type="type"></x-toast>
 	<router-view></router-view>
 </div>
 
@@ -79,17 +80,15 @@ module.exports = {
 			opacity:1,
 			timer: null,
 
+			// toast相关
+			type: "",
+
 			// 客户端地址封装
 			HTTP: 'http://',
 			// CLIENT_IP: "127.0.0.1",
 			CLIENT_IP: "172.16.103.61",
-		    CLIENT_PORT: "40000",
-			CLIENT_URL: {
-				//　获取限时任务列表
-				"getMissionList": this.CLIENT_LINK + "/GetSourceData",
-				// 小助手心跳检查
-				"ping": this.CLIENT_LINK + "/ping"
-			}
+			// CLIENT_IP: "172.16.103.111",
+		    CLIENT_PORT: "40000"
 		}
 	},
 	computed: {
@@ -103,6 +102,7 @@ module.exports = {
 			return {
 				//　获取限时任务列表
 				"getMissionList": this.CLIENT_LINK + "/GetSourceData",
+				"getMissionDetail": this.CLIENT_LINK + "/SnatchTask",
 				// 小助手心跳检查
 				"ping": this.CLIENT_LINK + "/ping"
 			}

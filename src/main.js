@@ -7,9 +7,9 @@ var Vue = require("vue"),
 import app from "./components/App"
 import Home from './components/Home'
 import progress from "vux/src/components/progress"
-// import xHeader from "vux/src/components/x-header"
 import loading from "vux/src/components/loading"
-
+import xPopup from "./components/common/xPopup"
+import xToast from "./components/common/xToast"
 
 	// Debug mode
 	Vue.config.debug = true;
@@ -18,22 +18,15 @@ import loading from "vux/src/components/loading"
 	Vue.use(VueResource);
 
 
-var router = new VueRouter(),
-	store = {}, 
-		// use to store state, mainly in userinfo->telphone\wechat
-
-	// 客户端配置信息
-	HTTP = "http://",
-	URL_SCHEME = "mayike://",
-	CLIENT_IP = "127.0.0.1",
-	CLIENT_PORT = "40000",
-	CLIENT_HOST = CLIENT_IP + ":" + CLIENT_PORT,
-	CLIENT_URL = HTTP + CLIENT_HOST;
+var router = new VueRouter();
 
 	// 注册组件
 	// Vue.component("x-header", xHeader);
 	Vue.component("loading", loading);
 	Vue.component("progress", progress);
+	Vue.component('x-popup', xPopup);
+	Vue.component('x-toast', xToast);
+
 	// 路由表
 	router.map({
 		// 首页
@@ -113,118 +106,6 @@ var router = new VueRouter(),
 	router.start(app, "#app");
 	window.router = router;
 
-
-	/**
-     *  签名生成算法
-     *
-     *  @param    {json}  params
-     *  @param   {string} access_key
-     *  @return   {string}
-     */
-	function getSignature (params, access_key) {
-		access_key = access_key || "e1064a500b2640ff0a74439f1758c6aa";
-
-		var str = '', tmp_arr = [];
-		for (var p in params) tmp_arr.push(p);
-		// 参数根据其参数名进行降序排序
-		tmp_arr.sort();
-		// 遍历排序后的参数，拼接 key=value 字符串
-		for (var i = 0; i < tmp_arr.length; i++)
-		    str += tmp_arr[i] + '=' + params[tmp_arr[i]];
-		// 在拼接字符串后再接上 access_key
-		str += access_key;
-		// 通过 MD5 算法为签名字符串生成一个 MD5 签名，该签名就是 sign 参数值
-		return md5(str);
-	}
-
-	// function cAjax (params, sUrl, sPath, type="GET", cUrl=CLIENT_URL, method="GET") {
-	function cAjax (params, sUrl, sPath, type, cUrl, method) {
-
-		 // 由于ajax自动会将参数encode，所以进行md5之前要encode
-    	var stringifyParams = JSON.stringify(params),
-            encodedParams = encodeURIComponent(stringifyParams),
-            encodedUrlhost = encodeURIComponent(sUrl),
-            encodedUrlpath = encodeURIComponent(sPath),
-
-            md5Json = {
-                jsonparams: encodedParams,
-                urlhost: encodedUrlhost,
-                urlpath: encodedUrlpath,
-                type: type
-            },
-
-            newParams = {
-                jsonparams: stringifyParams,
-                urlhost: sUrl,
-                urlpath: sPath,
-                type: type
-            };
-
-        newParams.sign = getSignature(md5Json);
-
-    	Vue.http({url: cUrl, method: method, data: newParams}).then(
-    	// Vue.http.post(cUrl, {method: method, data: newParams}).then(
-    		// success
-    		function(response){
-    			alert(response.data);
-    		},
-    		// fail
-    		function(response){
-    			alert(response.data);
-    		})
-    }
-
- 	// function heartBeatCheck (type, option={"url": HEARTBEAT_URL, "host":CLIENT_HOST, "timeout":1800, "interval":2000}) {
- 	function heartBeatCheck (type, option) {
- 		type = type || "GET";
- 		// option.
-     	switch (type) {
-     	case "normal":
-     		var normalCounter = 0,
-     			normalTimer = setInterval(function(){
-	     		Vue.http.post(option.url, {timeout: option.timeout}).then(
-		     		// success
-		     		function(){
-		     			normalCounter++;
-		     			if (normalCounter > 2) {
-			     			clearInterval(normalTimer);
-			     		} else {
-		     				// get session and write it in cookie
-		     			}
-		     		},
-		     		// fail
-		     	 	function() {
-		     	 		clearInterval(normalTimer);
-		     	 		// pop up to startup assist
-		 		});
-	     	}, option.interval);
-     		break;
-     	case "mission":
-     		var missionCounter = 0,
-     			missionTimer = setInterval(function(){
-	     		Vue.http.post(option.url, {timeout: option.timeout}).then(
-		     		// success
-		     		function(){ 
-		     			missionCounter++;
-		     			if (missionCounter < 3) {
-		     				// get session and write it in cookie
-		     			}
-		     		},
-		     		// fail
-		     	 	function() {
-		     	 		clearInterval(normalTimer);
-		     	 		// pop up to startup assist
-		 		});
-	     	}, option.interval);
-	     	break;
-     	}
-     }
-
-     // document.body.onclick=function(){
-     // 	// cAjax (params, sUrl, sPath, type, cUrl, method) {
-     // 	cAjax({a:1}, "http://test2.hongbaorili.com", "loginaction", "POST", CLIENT_URL+"/rootaction", "GET");
-     // }
-	///////////////////////////////////////////////
 	// Mock.js
 	var Random = Mock.Random;
 	// Random.extend({

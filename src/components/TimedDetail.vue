@@ -2,45 +2,129 @@
 <template>
 <style scoped>
     body{background:#F5F4F9;}
-    .detail{background:#fff;border:1px solid #e6e6e6;width:90%;margin:15px auto 0;font-size:14px;overflow: hidden;}
-    .detail dd,.detail dt{margin:0;padding:15px}
-    .detail dd{padding-top:0;border-bottom:1px solid #e6e6e6}
-    .detail dd:last-child{border:none}
-    .right{float:right;color:#999}
-    .left{color:#646462;font-weight: bold}
-    #index .active{background: #ee544f;color:white;}
-    #index p{border:1px solid #ee544f;border-left:none;}
-    /*vux reset*/
-    
+    #list{padding:0 4% 12px;}
+   .mission-item{background: white;border-radius: 6px;margin-top:12px;}
+
+   .item-icon{text-align: center;padding-left:0.25rem;}
+   .item-icon img{border-radius: 6px}
+
+   .item-text{border-right:1px dashed #E3E2E1;position: relative;padding:16px 0.375rem; color:#676767;}
+   .item-text .mission-title{margin-bottom:2px;}
+   .item-text .tag{font-size: 11px;color:#bcbcbc;}
+   .item-text .mission-tag{border-radius: 2px;border:1px solid #E3E2E1;padding:2px;}
+   .item-text .mission-rest{color:#DD5555;}
+
+   .item-status{text-align: center;}
+   .item-status .mission-on{color:#DD5555;font-size:18px;}
+   .item-status .mission-point{color:#FA8919}
+   .item-status .mission-point{font-size:30px;}
+   .item-status .mission-point .rmb{font-size: 20px;}
+
+    .dot-top,.dot-bottom{position: absolute;width:10px;height:10px;border-radius:50%;background: #F5F4F9;right:-5px;}
+    .dot-top{
+        top:-5px;
+    }
+    .dot-bottom{
+        bottom:-5px;
+    }
+
+    #mission-tips{
+        padding: 12px;
+        margin-top:12px;
+        margin-bottom: 16px;
+        background: white;
+        border-radius:6px;
+        font-size: 12px;
+        color:#898989;
+    }
+
+    #mission-tips .red{
+        color:#DD5555;
+    }
+
+    #mission-btn .btn{
+        background: #DD5555;
+        border-radius: 6px;
+        color:white;
+        text-align: center;
+        margin-bottom: 18px;
+    }
+    #mission-btn .step-text{
+        border-right:1px solid #EDA5A5;
+        padding:12px 0;
+    }
 </style>
     
-<div id="timed-list">
-<sticky id="fuckme">
+<div id="timedDetail">
+<sticky>
     <x-header
         :left-options="{showBack:true, preventGoBack: true}"
         :right-options="{showMore:true}"
-    >限时任务</x-header>
+    >任务详情</x-header>
 </sticky>
 
-<scroller lock-x scrollbar-y :height="listHeight" use-pullup  @pullup:loading="load"　:pullup-config="pullupConfig2">
-    <flexbox class="item">
-        <flexbox-item class="info-mission">
-            <img :src="" class="icon-mission">
-            <div class="text-mission">
-                <p class="title-mission"></p>
+<section id="list">
+    <!-- 任务信息 -->
+    <flexbox :gutter="0" class="mission-item">
+        <flexbox-item :span="2/10" class="item-icon">
+            <img :src="data.iconUrl" width="80%">
+        </flexbox-item>
+
+        <flexbox-item :span="5/10" class="item-text">
+            <div class="mission-info">
+                <p class="mission-title">{{data.name}}</p>
                 <p class="tag">
-                    <span class="tag-mission"></span>
-                    <span class="tag-mission">剩<span class="number-mission"></span>份</span>
+                    <span class="mission-tag" v-if="data.isfree">免费</span>
+                    <span class="mission-tag" v-else>付费</span>
+
+                    <span class="mission-tag">剩 <span class="mission-rest">{{data.remainNumber}}</span> 份</span>
                 </p>
             </div>
+            <i class="dot-top"></i>
+            <i class="dot-bottom"></i>
         </flexbox-item>
-        <flexbox-item class="number-point">
-            <p class="on-mission">进行中...</p>
-            <p class="point-mission"><span class="rmb"></span></p>
+
+        <flexbox-item :span="3/10" class="item-status">
+            <p class="mission-point"><span class="rmb">￥</span>{{data.point/100}}</p>
         </flexbox-item>
     </flexbox>
-    
-</scroller>
+
+    <!-- 任务提示 -->
+    <div id="mission-tips">
+        <ul>
+            <li>1.点击“复制关键词”</li>
+            <li>2.点击“马上开始任务”进入App Store<span class="red">粘贴搜索</span></li>
+            <li>3.<span class="red">大概在第{{data.rank}}位</span>，下载安装</li>
+            <li>4.打开试用，前台运行，真实体验3分钟</li>
+        </ul>
+    </div>
+
+    <!-- 任务步骤 -->
+    <div id="mission-btn">
+
+        <a>
+        <flexbox :gutter="0" class="btn">
+            <flexbox-item :span="2/7" class="step-text">步骤 1</flexbox-item>
+            <flexbox-item :span="5/7">复制关键词：{{data.keyWord}}</flexbox-item>
+        </flexbox>
+        </a>
+
+        <a>
+        <flexbox :gutter="0" class="btn">
+            <flexbox-item :span="2/7" class="step-text">步骤 2</flexbox-item>
+            <flexbox-item :span="5/7">马上开始任务</flexbox-item>
+        </flexbox>
+        </a>
+
+        <a>
+        <flexbox :gutter="0" class="btn">
+            <flexbox-item :span="2/7" class="step-text">步骤 3</flexbox-item>
+            <flexbox-item :span="5/7">完成后点此领钱</flexbox-item>
+        </flexbox>
+        </a>
+
+    </div>
+</section>
 
 </div>
 
@@ -51,39 +135,42 @@ import xHeader from "vux/src/components/x-header/index.vue"
 import sticky from "vux/src/components/sticky/index.vue"
 import flexbox from "vux/src/components/flexbox/index.vue"
 import flexboxItem from "vux/src/components/flexbox-item/index.vue"
-import scroller from "vux/src/components/scroller/index.vue"
 
 module.exports = {
-    name: 'timedList',
+    name: 'timedDetail',
     components: {
         "sticky": sticky,
         "x-header": xHeader,
-        "scroller": scroller,
         "flexbox": flexbox,
         "flexbox-item": flexboxItem
     },
+    route: {
+        data: function(transition) {
+            return this.$http.get(this.$root.CLIENT_URL.getMissionDetail + "?adid=" + this.$route.query.adid).then(
+                function (response) {
+                    if (response.data.c === 0) {
+                        this.data = response.data.d
+                        this.$root.endLoading(this.$loadingRouteData)
+                    } else {
+                        alert("c is -1")
+                        // emit to popup fail stuff
+                    }
+                },
+                function (response) {
+                    alert("Opsss");
+                    // emit to popup fail stuff
+                });
+        }
+    },
     data:function () {
         return {
-            data: {},
-
+            data: {}
         }
     },
     methods: {
-        changeType: function (type) {
-            this.currentType = type;
-        },
-        load (uuid) {
-            console.log("fuck test");
-            this.$broadcast('pullup:reset', uuid)
-        }
     },
     ready: function() {
-
-    },
-    computed: {
-        listHeight: function () {
-            return (document.documentElement.clientHeight - 90) + "px"
-        }
+        console.log(this.data)
     }
 };
 </script>

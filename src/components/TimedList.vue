@@ -2,8 +2,8 @@
 <template>
 <style scoped>
     body{background:#F5F4F9;}
-    #list{padding:1.25rem 4%;}
-   .mission-item{background: white;border-radius: 6px;display: block;margin-top:12px;}
+    #list{padding:0 4% 12px;}
+   .mission-item{background: white;border-radius: 6px;margin-top:12px;}
 
    .item-icon{text-align: center;padding-left:0.25rem;}
    .item-icon img{border-radius: 6px}
@@ -19,6 +19,7 @@
    .item-status .mission-point{color:#FA8919}
    .item-status .mission-point{font-size:30px;}
    .item-status .mission-point .rmb{font-size: 20px;}
+
     .dot-top,.dot-bottom{position: absolute;width:10px;height:10px;border-radius:50%;background: #F5F4F9;right:-5px;}
     .dot-top{
         top:-5px;
@@ -39,11 +40,10 @@
 </sticky>
 
 <scroller lock-x scrollbar-y :height="listHeight" v-ref:scroller use-pullup  @pullup:loading="load"　:pullup-config="pullupConfig">
-    <section id="list">
-    <a v-for="m in data.d" v-link="{ 'path': '/fuck' }" class="mission-item">
-    <flexbox :gutter="0">
+<section id="list">
+    <flexbox :gutter="0" class="mission-item" v-for="m in data.d" @click="goPlay(m.id, m)">
         <flexbox-item :span="2/10" class="item-icon">
-            <img :src="m.imgUrl" width="80%">
+            <img :src="m.iconUrl" width="80%">
         </flexbox-item>
 
         <flexbox-item :span="5/10" class="item-text">
@@ -51,7 +51,7 @@
                 <p class="mission-title">{{m.name}}</p>
                 <p class="tag">
                     <span class="mission-tag" v-if="m.isfree">免费</span>
-                    <span class="mission-tag" v-else>购买</span>
+                    <span class="mission-tag" v-else>付费</span>
 
                     <span class="mission-tag">剩 <span class="mission-rest">{{m.remainNumber}}</span> 份</span>
                 </p>
@@ -65,8 +65,7 @@
             <p class="mission-point" v-else><span class="rmb">￥</span>{{m.point/100}}</p>
         </flexbox-item>
     </flexbox>
-    </a>
-    </section>
+</section>
 </scroller>
 
 </div>
@@ -91,30 +90,16 @@ module.exports = {
     },
     route: {
         data: function(transition) {
-            return this.$http.get(this.$root.CLIENT_URL.getMissionList).then(
-                function (response) {
-                    this.$root.endLoading(this.$loadingRouteData)
-                    if (response.data.c === 0) {
-                        this.data = response.data
-                        this.$nextTick(function(){
-                            this.$broadcast('scroller:reset', this.$refs.scroller.uuid)
-                        })
-                    } else {
-                        alert("c is -1")
-                        // emit to popup fail stuff
-                    }
-                },
-                function (response) {
-                    alert("Opsss");
-                    // emit to popup fail stuff
-                });
+            return this.loadData()
         }
     },
     data:function () {
         return {
-            data: {},
+            data: {d:[]},
             page: 1,
-            amount: 10
+            amount: 10,
+            flag: true, // 用于防止多次请求
+            end: false  // 是否全部加载完毕
         }
     },
     methods: {
@@ -122,16 +107,48 @@ module.exports = {
             this.currentType = type;
         },
         load (uuid) {
-            this.$http.get
             this.$broadcast('pullup:reset', uuid)
+            this.loadData()
+        },
+        goPlay (id) {
+            window.router.go({path: '/timedDetail?adid='+id})
+        },
+        loadData: function() {
+            this.$root.type="timeout"
+
+            if (!this.flag) {
+                return false
+            } else {
+                this.flag = false
+                return this.$http.get(this.$root.CLIENT_URL.getMissionList, {page: this.page}).then(
+                    function (response) {
+                        this.$root.endLoading(this.$loadingRouteData)
+                        if (response.data.c === 0) {
+                            this.data.d = this.data.d.concat(response.data.d)
+                            this.$nextTick(function(){
+                                this.$broadcast('scroller:reset', this.$refs.scroller.uuid)
+                            this.page++;
+                            this.flag = true
+                            })
+                        } else {
+                            alert("c is -1")
+                            // emit to popup fail stuff
+                        }
+                    },
+                    function (response) {
+                        alert("Opsss");
+                        // emit to popup fail stuff
+                    });
+                }
         }
     },
     ready: function() {
+        console.log(this.data)
     },
     computed: {
         listHeight: function () {
             return (document.documentElement.clientHeight - 46) + "px"
         }
     }
-};
+}
 </script>
