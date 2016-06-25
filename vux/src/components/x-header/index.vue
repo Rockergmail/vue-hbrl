@@ -59,7 +59,10 @@ export default {
 
     onClickRefresh () {
       var parent = this.$parent;
+      var rootComponent = this.$root;
+      rootComponent.startLoading()
       parent.$http.post(this.rightOptions.refreshLink).then(function (response) {
+          rootComponent.endLoading(true)
           parent.data = response.data;
       }, function (response) {
           alert("Opsss");

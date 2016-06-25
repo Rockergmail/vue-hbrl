@@ -117,6 +117,11 @@ export default {
         this.height = `${document.documentElement.clientHeight}px`
         this.reset()
       }
+
+      if (this.height.indexOf('-') === 0) {
+        this.height = `${document.documentElement.clientHeight + parseInt(this.height)}px`
+      }
+
       return {
         height: `${this.height}`
       }
@@ -233,6 +238,16 @@ export default {
     'scroller:reset' (uuid) {
       if (uuid === this.uuid) {
         this.reset()
+      }
+    },
+    'pullup:disable' (uuid) {
+      if (uuid === this.uuid) {
+        this.pullup.stop()
+      }
+    },
+    'pullup:enable' (uuid) {
+      if (uuid === this.uuid) {
+        this.pullup.restart()
       }
     }
   },

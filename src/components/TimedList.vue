@@ -39,7 +39,7 @@
     >限时任务</x-header>
 </sticky>
 
-<scroller lock-x scrollbar-y :height="listHeight" v-ref:scroller use-pullup  @pullup:loading="load"　:pullup-config="pullupConfig">
+<scroller lock-x scrollbar-y :height="listHeight" v-ref:scroller use-pullup  @pullup:loading="load" :pullup-status.sync="pullupStatus">
 <section id="list">
     <flexbox :gutter="0" class="mission-item" v-for="m in data.d" @click="goPlay(m.id, m)">
         <flexbox-item :span="2/10" class="item-icon">
@@ -66,6 +66,13 @@
         </flexbox-item>
     </flexbox>
 </section>
+
+<!--pullup slot-->
+<div v-show="data.d" slot="pullup" class="xs-plugin-pullup-container xs-plugin-pullup-up" style="position: absolute; width: 100%; height: 40px; line-height:40px; bottom: -40px; text-align: center;">
+  <span v-show="pullupStatus === 'default' || pullupStatus === 'up'">上拉加载更多</span>
+  <span v-show="pullupStatus === 'loading'"><spinner type="ios-small"></spinner></span>
+</div>
+
 </scroller>
 
 </div>
@@ -78,6 +85,7 @@ import sticky from "vux/src/components/sticky/index.vue"
 import flexbox from "vux/src/components/flexbox/index.vue"
 import flexboxItem from "vux/src/components/flexbox-item/index.vue"
 import scroller from "vux/src/components/scroller/index.vue"
+import spinner from "vux/src/components/spinner"
 
 module.exports = {
     name: 'timedList',
@@ -86,7 +94,8 @@ module.exports = {
         "x-header": xHeader,
         "scroller": scroller,
         "flexbox": flexbox,
-        "flexbox-item": flexboxItem
+        "flexbox-item": flexboxItem,
+        "spinner": spinner
     },
     route: {
         data: function(transition) {
@@ -99,7 +108,8 @@ module.exports = {
             page: 1,
             amount: 10,
             flag: true, // 用于防止多次请求
-            end: false  // 是否全部加载完毕
+            end: false, // 是否全部加载完毕
+            pullupStatus: 'default'
         }
     },
     methods: {
@@ -107,19 +117,19 @@ module.exports = {
             this.currentType = type;
         },
         load (uuid) {
-            this.$broadcast('pullup:reset', uuid)
-            this.loadData()
+            this.loadData(uuid)
         },
         goPlay (id) {
             window.router.go({path: '/timedDetail?adid='+id})
         },
-        loadData: function() {
+        loadData: function(uuid) {
             if (!this.flag) {
                 return false
             } else {
                 this.flag = false
-                return this.$http.get(this.$root.CLIENT_URL.getMissionList, {page: this.page}).then(
+                return this.$http.get(this.$root.CLIENT_URL.getMissionList, {page: this.page}, {timeout:500}).then(
                     function (response) {
+
                         this.$root.endLoading(this.$loadingRouteData)
                         if (response.data.c === 0) {
                             this.data.d = this.data.d.concat(response.data.d)
@@ -132,9 +142,11 @@ module.exports = {
                             alert("c is -1")
                             // emit to popup fail stuff
                         }
+                        this.$broadcast('pullup:reset', uuid)
                     },
                     function (response) {
-                        alert("Opsss");
+                        console.log(response)
+                        this.$broadcast('pullup:reset', uuid)
                         // emit to popup fail stuff
                     });
                 }
