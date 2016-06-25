@@ -120,7 +120,7 @@ var router = new VueRouter();
 	// })
 
 	Mock.setup({
-		timeout: 1000
+		timeout: 3000
 	})
 
 	// home

@@ -114,8 +114,6 @@ module.exports = {
             window.router.go({path: '/timedDetail?adid='+id})
         },
         loadData: function() {
-            this.$root.type="timeout"
-
             if (!this.flag) {
                 return false
             } else {

@@ -29,6 +29,11 @@
     	transition: width .6s ease-in-out, opacity .6s ease-in;
     }
 
+    /*reset toast*/
+    #ximi_toast .weui_toast{
+    	top:86%;
+    }
+
     /*Media Query*/
 
     /*iPhone 2G-4S in portrait*/
@@ -62,7 +67,7 @@
 <div id="wrapper">
 	<loading :show="showLoading"></loading>
 	<progress :percent.sync="percent" v-if="showProgress" :opacity.sync="opacity"></progress>
-	<x-toast :type="type"></x-toast>
+	<x-toast :type.sync="toastType"></x-toast>
 	<router-view></router-view>
 </div>
 
@@ -81,12 +86,12 @@ module.exports = {
 			timer: null,
 
 			// toast相关
-			type: "",
+			toastType: "none",
 
 			// 客户端地址封装
 			HTTP: 'http://',
-			// CLIENT_IP: "127.0.0.1",
-			CLIENT_IP: "172.16.103.61",
+			CLIENT_IP: "127.0.0.1",
+			// CLIENT_IP: "172.16.103.61",
 			// CLIENT_IP: "172.16.103.111",
 		    CLIENT_PORT: "40000"
 		}

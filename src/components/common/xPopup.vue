@@ -1,7 +1,7 @@
 <template>
 
 <style scoped>
-  .weui_toast {
+  .weui_xpopup {
       position: fixed;
       -webkit-transform: translate(-50%, -50%);
       transform: translate(-50%, -50%);
@@ -26,7 +26,7 @@
 
   <div id="ximi_popup" v-if="templates.indexOf(template) > -1">
     <div class="weui_mask"></div>
-    <div class="weui_toast" :style="{width:pWidth}">
+    <div class="weui_xpopup" :style="{width:pWidth}">
       <!-- 领钱成功 -->
       <div v-if="template === 'takeok'">
         <img src="../2.png">
