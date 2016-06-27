@@ -67,7 +67,7 @@
 <div id="wrapper">
 	<loading :show="showLoading"></loading>
 	<progress :percent.sync="percent" v-if="showProgress" :opacity.sync="opacity"></progress>
-	<x-toast :type.sync="toastType"></x-toast>
+	<x-toast :t-string="toastString" :t-time="toastTime" :t-type.sync="toastType" :t-width="toastWidth"></x-toast>
 	<router-view></router-view>
 </div>
 
@@ -85,8 +85,11 @@ module.exports = {
 			opacity:1,
 			timer: null,
 
-			// toast相关
-			toastType: "none",
+			// x-toast相关
+			toastWidth: "",
+			toastTime: 0,
+			toastType: "",
+			toastString: "",
 
 			// 客户端地址封装
 			HTTP: 'http://',
@@ -137,6 +140,15 @@ module.exports = {
 			this.opacity = 1
 			this.percent = 0
 		},
+
+		// x-toast相关
+		toastStart: function(str, time=2000, type="text", tWidth="80%") {
+			this.toastString = str;
+			this.toastTime = time;
+			this.toastType = type;
+			this.toastWidth = tWidth
+		},
+
 		// 小助手相关
 		/**
 	     *  签名生成算法

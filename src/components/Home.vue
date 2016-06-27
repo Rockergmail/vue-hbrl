@@ -33,12 +33,10 @@
         :right-options="{showMore:false,showRefresh:true,refreshLink: '/mock/home'}"
     >红包日历</x-header>
 
-    <!-- <x-popup template="giveup"></x-popup> -->
-
     <div id="main">
     	<section id="section-board">
             <p id="text-income">
-                <p id="text-invite" @click="fuckMe">邀请码： {{ data['inviteCode'] }}</p>
+                <p id="text-invite">邀请码： {{ data['inviteCode'] }}</p>
 
                 <p id="text-total">累计收益（元）</p>
                 <countup v-if="data.total" id="data-total" :end-val="data.total" :decimals="2"></countup>
@@ -140,18 +138,13 @@ module.exports = {
         }
     },
     ready: function () {
-        this.$root.toastType = "timeout"
         this.$http.get('/mock/home').then(function (response) {
-            this.data = response.data
+            var getData = response.json(response.data)
+            this.data = getData
         }, function (response) {
             alert("Opsss");
         });
         // 这里要用ready而不是route.data，是因为要先检测到它是否打开小助手来登陆
-    },
-    methods: {
-        fuckMe: function() {
-            this.$root.toastType = "timeout"
-        }
     }
 };
 </script>

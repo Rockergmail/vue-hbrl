@@ -106,6 +106,24 @@ var router = new VueRouter();
 	router.start(app, "#app");
 	window.router = router;
 
+	// vue-resource 个性化
+	Vue.http.interceptors.push(function(request, next){
+		var timeout; 
+
+		if (request._timeout) {
+			timeout = setTimeout(function(){
+				next(request.respondWith(request.body, {
+					status: 408,
+					statusText: 'request timeout'
+				}))
+			}, request._timeout)
+		}
+
+		next(function(response){
+			clearTimeout(timeout);
+		})
+	});
+
 	// Mock.js
 	var Random = Mock.Random;
 	// Random.extend({
