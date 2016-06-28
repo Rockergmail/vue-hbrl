@@ -103,6 +103,9 @@ module.exports = {
                  alert(response.statusText);
              });
           }, 600);
+        },
+        giveup: function () {
+          
         }
     },
     computed: {

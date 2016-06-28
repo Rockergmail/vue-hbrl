@@ -92,14 +92,14 @@ var router = new VueRouter();
 
 
 	// 路由勾子canUse之前
-	router.beforeEach(function(transition){
-		router.app.resetLoading()
-	    transition.next()
+	router.beforeEach(function(transition){		
+		router.app.resetLoading();
+	    transition.next();
 	})
 
 	// 路由勾子activate之前
 	router.afterEach(function(transition){
-		router.app.startLoading()
+		router.app.startLoading();
 	})
 
 	// 启动路由

@@ -102,7 +102,8 @@ module.exports = {
     route: {
         data: function(transition) {
             return this.loadData()
-        }
+        },
+        waitForData: true
     },
     data:function () {
         return {
@@ -136,7 +137,9 @@ module.exports = {
                     this.$root.CLIENT_URL.getMissionList,
                     {
                         params:{
-                            page: this.page
+                            page: this.page,
+                            type: 0
+                            // type为0是任务列表，1为任务详情
                         }
                         // ,
                         // _timeout: 500

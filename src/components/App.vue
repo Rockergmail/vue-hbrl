@@ -112,7 +112,8 @@ module.exports = {
 				"getMissionList": this.CLIENT_LINK + "/GetSourceData",
 				"getMissionDetail": this.CLIENT_LINK + "/SnatchTask",
 				// 小助手心跳检查
-				"ping": this.CLIENT_LINK + "/ping"
+				"ping": this.CLIENT_LINK + "/ping",
+				"copy": this.CLIENT_LINK + "/CopyKeyWord"
 			}
 		}
 	},
@@ -125,20 +126,24 @@ module.exports = {
                 this.opacity = 0
                 this.percent = 100  
 			}
+			console.log("endLoading")
 		},
 		startLoading: function() {
 			var _this = this
+			// this.resetLoading()
 			this.showProgress = true
 			this.percent = 30
 			this.timer = setTimeout(function(){
 			    _this.showLoading = true
 			}, 2000)
+			console.log("startLoading")
 		},
 		resetLoading: function() {
 			this.showLoading = false
 			this.showProgress = false
 			this.opacity = 1
 			this.percent = 0
+			console.log("resetLoading")
 		},
 
 		// x-toast相关

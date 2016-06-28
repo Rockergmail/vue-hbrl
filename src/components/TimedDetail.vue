@@ -103,7 +103,7 @@
     <div id="mission-btn">
 
         <a>
-        <flexbox :gutter="0" class="btn">
+        <flexbox :gutter="0" class="btn" @click="copyKey">
             <flexbox-item :span="2/7" class="step-text">步骤 1</flexbox-item>
             <flexbox-item :span="5/7">复制关键词：{{data.keyWord}}</flexbox-item>
         </flexbox>
@@ -148,8 +148,9 @@ module.exports = {
         data: function(transition) {
             return this.$http.get(this.$root.CLIENT_URL.getMissionDetail + "?adid=" + this.$route.query.adid).then(
                 function (response) {
-                    if (response.data.c === 0) {
-                        this.data = response.data.d
+                    var getData = response.json(response.data);
+                    if (getData.c === 0) {
+                        this.data = getData.d
                         this.$root.endLoading(this.$loadingRouteData)
                     } else {
                         alert("c is -1")
@@ -160,7 +161,8 @@ module.exports = {
                     alert("Opsss");
                     // emit to popup fail stuff
                 });
-        }
+        },
+        waitForData: true
     },
     data:function () {
         return {
@@ -168,6 +170,29 @@ module.exports = {
         }
     },
     methods: {
+        copyKey: function(){
+            this.$http.get(
+                this.$root.CLIENT_URL.copy,
+                {   parmas:{
+                        keyword: this.data.keyWord
+                    }
+                }).then(
+                function (response) {
+                    // var getData = response.json(response.data);
+                    // if (getData.c === 0) {
+                    //     this.data = getData.d
+                    //     this.$root.endLoading(this.$loadingRouteData)
+                    // } else {
+                    //     alert("c is -1")
+                    //     // emit to popup fail stuff
+                    // }
+                    console.log(response)
+                },
+                function (response) {
+                    alert("Opsss");
+                    // emit to popup fail stuff
+                });
+        }
     },
     ready: function() {
         console.log(this.data)
