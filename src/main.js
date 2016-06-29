@@ -92,7 +92,10 @@ var router = new VueRouter();
 
 
 	// 路由勾子canUse之前
-	router.beforeEach(function(transition){		
+	router.beforeEach(function(transition){
+		// if (transition.from.path == "/timedDetail") {
+		// 	alert("you are a bitch")
+		// }
 		router.app.resetLoading();
 	    transition.next();
 	})

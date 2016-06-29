@@ -102,26 +102,28 @@
     <!-- 任务步骤 -->
     <div id="mission-btn">
 
-        <a>
+      <template v-if="!data.keyWord">
+        <flexbox :gutter="0" class="btn" @click="getMoney">
+            <flexbox-item class="step-text">完成后点此领钱</flexbox-item>
+        </flexbox>
+      </template>  
+
+      <template v-else>
         <flexbox :gutter="0" class="btn" @click="copyKey">
             <flexbox-item :span="2/7" class="step-text">步骤 1</flexbox-item>
             <flexbox-item :span="5/7">复制关键词：{{data.keyWord}}</flexbox-item>
         </flexbox>
-        </a>
 
-        <a>
-        <flexbox :gutter="0" class="btn">
+        <flexbox :gutter="0" class="btn" @click="startMission">
             <flexbox-item :span="2/7" class="step-text">步骤 2</flexbox-item>
             <flexbox-item :span="5/7">马上开始任务</flexbox-item>
         </flexbox>
-        </a>
 
-        <a>
-        <flexbox :gutter="0" class="btn">
+        <flexbox :gutter="0" class="btn" @click="getMoney">
             <flexbox-item :span="2/7" class="step-text">步骤 3</flexbox-item>
             <flexbox-item :span="5/7">完成后点此领钱</flexbox-item>
         </flexbox>
-        </a>
+      </template>
 
     </div>
 </section>
@@ -178,20 +180,18 @@ module.exports = {
                     }
                 }).then(
                 function (response) {
-                    // var getData = response.json(response.data);
-                    // if (getData.c === 0) {
-                    //     this.data = getData.d
-                    //     this.$root.endLoading(this.$loadingRouteData)
-                    // } else {
-                    //     alert("c is -1")
-                    //     // emit to popup fail stuff
-                    // }
-                    console.log(response)
+                    var getData = response.json(response.data);
+                    if (getData.c === 0) {
+                        this.$root.toastStart("复制成功！")
+                    }
                 },
                 function (response) {
                     alert("Opsss");
                     // emit to popup fail stuff
                 });
+        },
+        startMission: function() {
+            window.location.href="itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/search"
         }
     },
     ready: function() {

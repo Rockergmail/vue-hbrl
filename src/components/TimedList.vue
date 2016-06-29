@@ -43,7 +43,7 @@
 
 <scroller lock-x scrollbar-y :height="listHeight" v-ref:scroller use-pullup  @pullup:loading="load" :pullup-status.sync="pullupStatus">
 <section id="list">
-    <flexbox :gutter="0" class="mission-item" v-for="m in data.d" @click="goPlay(m.id, m)">
+    <flexbox :gutter="0" class="mission-item" v-for="m in data.d" @click="giveUpTask(m.id)">
         <flexbox-item :span="2/10" class="item-icon">
             <img :src="m.iconUrl" width="80%">
         </flexbox-item>
@@ -124,7 +124,43 @@ module.exports = {
             this.loadData(uuid)
         },
         goPlay (id) {
-            window.router.go({path: '/timedDetail?adid='+id})
+            this.$http.get(
+                this.$root.CLIENT_URL.snatchTask,
+                {
+                    params:{
+                        adid: id,
+                    }
+                }).then(
+                function (response) {
+                    var getData = response.json(response.data)
+                    if (getData.c === 0) {
+                       alert(getData.msg)
+                       window.router.go({path: '/timedDetail?adid='+id}) 
+                    }
+                },
+                function (response) {
+                    alert("rocked")
+                });
+            
+        },
+        giveUpTask(id){
+            this.$http.get(
+                this.$root.CLIENT_URL.giveUpTask,
+                {
+                    params:{
+                        adid: id,
+                    }
+                }).then(
+                function (response) {
+                    var getData = response.json(response.data)
+                    if (getData.c === 0) {
+                       alert(getData.msg)
+                       // window.router.go({path: '/timedDetail?adid='+id}) 
+                    }
+                },
+                function (response) {
+                    alert("rocked")
+                });
         },
         loadData: function(uuid) {
             // 请求中，不可继续请求
@@ -138,7 +174,7 @@ module.exports = {
                     {
                         params:{
                             page: this.page,
-                            type: 0
+                            type: 1
                             // type为0是任务列表，1为任务详情
                         }
                         // ,

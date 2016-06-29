@@ -94,8 +94,8 @@ module.exports = {
 			// 客户端地址封装
 			HTTP: 'http://',
 			// CLIENT_IP: "127.0.0.1",
-			CLIENT_IP: "172.16.103.61",
-			// CLIENT_IP: "172.16.103.111",
+			// CLIENT_IP: "172.16.103.61",
+			CLIENT_IP: "172.16.103.111",
 		    CLIENT_PORT: "40000"
 		}
 	},
@@ -110,10 +110,13 @@ module.exports = {
 			return {
 				//　获取限时任务列表
 				"getMissionList": this.CLIENT_LINK + "/GetSourceData",
-				"getMissionDetail": this.CLIENT_LINK + "/SnatchTask",
+				"getMissionDetail": this.CLIENT_LINK + "/TaskDetail",
+				"snatchTask": this.CLIENT_LINK + "/SnatchTask",
+				"giveUpTask": this.CLIENT_LINK + "/GiveUpTask",
 				// 小助手心跳检查
 				"ping": this.CLIENT_LINK + "/ping",
 				"copy": this.CLIENT_LINK + "/CopyKeyWord"
+
 			}
 		}
 	},
