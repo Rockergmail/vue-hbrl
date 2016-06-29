@@ -151,8 +151,8 @@ module.exports = {
             return this.$http.get(
                 this.$root.CLIENT_URL.taskDetail,
                 {
-                    parmas:{
-                        adid:  this.$route.parmas.adid
+                    params:{
+                        adid: this.$route.params.adid
                     }
                 }).then(
                 function (response) {

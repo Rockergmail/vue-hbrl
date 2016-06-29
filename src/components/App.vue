@@ -66,7 +66,7 @@
 
 <div id="wrapper">
 	<loading :show="showLoading"></loading>
-	<x-popup :template="pType" :clickYes="pClickYes"></x-popup>
+	<x-popup :template="pType" :custom-click-yes="pClickYes"></x-popup>
 	<progress :percent.sync="percent" v-if="showProgress" :opacity.sync="opacity"></progress>
 	<x-toast :t-string="toastString" :t-time="toastTime" :t-type.sync="toastType" :t-width="toastWidth"></x-toast>
 	<router-view></router-view>
@@ -108,9 +108,10 @@ module.exports = {
 
 			// 客户端地址封装
 			HTTP: 'http://',
-			CLIENT_IP: "127.0.0.1",
+			// CLIENT_IP: "127.0.0.1",
 			// CLIENT_IP: "172.16.103.61",
 			// CLIENT_IP: "172.16.103.111",
+			CLIENT_IP: "192.168.1.138",
 		    CLIENT_PORT: "40000"
 		}
 	},
@@ -174,7 +175,7 @@ module.exports = {
 		},
 
 		// x-popup相关
-		popUpStart: function(type, fn=function(){}) {
+		popupStart: function(type, fn=function(){}) {
 			this.pType = type;
 			this.pClickYes = fn;
 		},

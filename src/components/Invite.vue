@@ -126,7 +126,3 @@ module.exports = {
 	}
 };
 </script>
-
-<style>
-@import '~vux/dist/vux.css'
-</style>

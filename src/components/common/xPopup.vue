@@ -71,7 +71,7 @@ module.exports = {
     template: {
       type: String
     },
-    clickYes: {
+    customClickYes: {
       type: Function
     },
     clickNo: {
@@ -97,10 +97,14 @@ module.exports = {
   methods: {
     clickNo: function() {
       this.template = "";
-      this.clickYes = function(){};
+      this.customClickYes = function(){};
     },
     clickYes: function() {
-      
+      this.customClickYes();
+      this.clickNo();
+    },
+    customClickYes: function(){
+
     }
   }
 }

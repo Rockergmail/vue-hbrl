@@ -8,7 +8,9 @@
     #section-board{background: #DD5555;color:white;padding:1.0rem 1.25rem;}
     #text-income{float:left;}
     #text-invite{float:right;color:#F1BDBD;}
-    #data-total{margin:16px 0;display:block;font-size: 42px;height:63px;}
+    #data-total{margin:16px 
+
+        0;display:block;font-size: 42px;height:63px;}
 
     /*section withdraw*/
     #section-withdraw{clear:both;border-top:2px solid #DE4346;padding:24px 0 4px;}

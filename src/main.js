@@ -89,7 +89,7 @@ var router = new VueRouter();
 	// 路由勾子canUse之前
 	router.beforeEach(function(transition){
 		if (transition.from.name == "detail") {
-			router.app.
+			router.app.popupStart("giveup",function(){alert("u son of bitch")})
 			transition.abort()
 		}
 		router.app.resetLoading();
@@ -103,7 +103,6 @@ var router = new VueRouter();
 
 	// 启动路由
 	router.start(app, "#app");
-	window.router = router;
 
 	// vue-resource 个性化
 	Vue.http.interceptors.push(function(request, next){
@@ -136,9 +135,9 @@ var router = new VueRouter();
 	// 	// }
 	// })
 
-	Mock.setup({
-		timeout: 3000
-	})
+	// Mock.setup({
+	// 	timeout: 3000
+	// })
 
 	// home
 	Mock.mock('/mock/home', {
