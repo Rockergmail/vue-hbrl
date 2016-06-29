@@ -66,7 +66,7 @@
 
 <div id="wrapper">
 	<loading :show="showLoading"></loading>
-	<x-popup :template="pType" :custom-click-yes="pClickYes"></x-popup>
+	<x-popup :p-type.sync="pType" :custom-click-yes="pClickYes"></x-popup>
 	<progress :percent.sync="percent" v-if="showProgress" :opacity.sync="opacity"></progress>
 	<x-toast :t-string="toastString" :t-time="toastTime" :t-type.sync="toastType" :t-width="toastWidth"></x-toast>
 	<router-view></router-view>

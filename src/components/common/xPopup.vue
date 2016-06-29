@@ -24,11 +24,11 @@
   }
 </style>
 
-  <div id="ximi_popup" v-if="templates.indexOf(template) > -1">
+  <div id="ximi_popup" v-if="templates.indexOf(pType) > -1">
     <div class="weui_mask"></div>
     <div class="weui_xpopup" :style="{width:pWidth}">
       <!-- 领钱成功 -->
-      <div v-if="template === 'takeok'">
+      <div v-if="pType == 'takeok'">
         <img src="../2.png">
         <p style="color:#646464;margin-top:6px">任务进行中 ...</p>
         <p style="color:#898989;margin:6px 0 20px">若无法完成，请手动重启应用后提交</p>
@@ -39,7 +39,7 @@
     <!-- 领钱失败 -->
 
     <!-- 放弃任务 -->
-    <div v-if="template === 'giveup'">
+    <div v-if="pType == 'giveup'">
       <img src="../1.png">
       <p style="color:#898989;margin:6px 0 20px">确定要放弃当前任务吗？</p>
       <flexbox :gutter="0" style="padding:0 5%">
@@ -47,6 +47,8 @@
           <x-button @click="clickNo" text="取消" style="padding:6px 0;color:#ccc"></x-button>
         </flexbox-item>
         <flexbox-item :span="1/2">
+
+
           <x-button @click="clickYes" text="放弃任务" style="padding:6px 0" type="primary"></x-button>
         </flexbox-item>
       </flexbox>
@@ -68,8 +70,9 @@ module.exports = {
       type: String,
       default: "88%"
     },
-    template: {
-      type: String
+    pType: {
+      type: String,
+      twoWay: true
     },
     customClickYes: {
       type: Function
@@ -96,7 +99,7 @@ module.exports = {
   },
   methods: {
     clickNo: function() {
-      this.template = "";
+      this.pType = "";
       this.customClickYes = function(){};
     },
     clickYes: function() {
