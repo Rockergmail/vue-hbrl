@@ -39,11 +39,14 @@
     >限时任务</x-header>
 </sticky>
 
+<toast :time="10000" :show="tShow">{{tString}}</toast>
+
 <div v-if="nomission">暂时没有任务哦～</div>
 
 <scroller lock-x scrollbar-y :height="listHeight" v-ref:scroller use-pullup  @pullup:loading="load" :pullup-status.sync="pullupStatus">
 <section id="list">
-    <flexbox :gutter="0" class="mission-item" v-for="m in data.d" @click="giveUpTask(m.id)">
+    <!-- <flexbox :gutter="0" class="mission-item" v-for="m in data.d" @click="giveUpTask(m.id)"> -->
+    <flexbox :gutter="0" class="mission-item" v-for="m in data.d" @click="goPlay(m.id)">
         <flexbox-item :span="2/10" class="item-icon">
             <img :src="m.iconUrl" width="80%">
         </flexbox-item>
@@ -88,6 +91,7 @@ import flexbox from "vux/src/components/flexbox/index.vue"
 import flexboxItem from "vux/src/components/flexbox-item/index.vue"
 import scroller from "vux/src/components/scroller/index.vue"
 import spinner from "vux/src/components/spinner"
+import toast from 'vux/src/components/toast'
 
 module.exports = {
     name: 'timedList',
@@ -97,7 +101,8 @@ module.exports = {
         "scroller": scroller,
         "flexbox": flexbox,
         "flexbox-item": flexboxItem,
-        "spinner": spinner
+        "spinner": spinner,
+        "toast": toast
     },
     route: {
         data: function(transition) {
@@ -109,11 +114,15 @@ module.exports = {
         return {
             data: {d:[]},
             page: 1,
-            amount: 10,
+            amount: 20,
             flag: true, // 用于防止请求过程中重复请求
             loadall: false, // 是否加载完毕
             nomission: false, // 没有任务
-            pullupStatus: 'default'
+            pullupStatus: 'default',
+
+            //toast 
+            tShow: false,
+            tString: "抢ing"
         }
     },
     methods: {
@@ -124,6 +133,7 @@ module.exports = {
             this.loadData(uuid)
         },
         goPlay (id) {
+            this.tShow = true;
             this.$http.get(
                 this.$root.CLIENT_URL.snatchTask,
                 {
@@ -132,10 +142,17 @@ module.exports = {
                     }
                 }).then(
                 function (response) {
-                    var getData = response.json(response.data)
+                    var getData = response.json(response.data);
+                    this.tString="跳转中";
                     if (getData.c === 0) {
                        alert(getData.msg)
-                       window.router.go({path: '/timedDetail?adid='+id}) 
+                       this.$router.go(
+                        { 
+                            name: 'detail',
+                            params: {
+                                adid: id
+                            }
+                        }) 
                     }
                 },
                 function (response) {
@@ -170,11 +187,12 @@ module.exports = {
             } else {
                 this.flag = false
                 return this.$http.get(
-                    this.$root.CLIENT_URL.getMissionList,
+                    this.$root.CLIENT_URL.taskList,
                     {
                         params:{
                             page: this.page,
-                            type: 1
+                            type: 1,
+                            amount: this.amount
                             // type为0是任务列表，1为任务详情
                         }
                         // ,

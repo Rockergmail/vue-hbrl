@@ -32,7 +32,7 @@
         <img src="../2.png">
         <p style="color:#646464;margin-top:6px">任务进行中 ...</p>
         <p style="color:#898989;margin:6px 0 20px">若无法完成，请手动重启应用后提交</p>
-        <x-button @click="clickYes" text="知道了" style="padding:6px 0" type="primary"></x-button>
+        <x-button @click="clickNo" text="知道了" style="padding:6px 0" type="primary"></x-button>
       </div>
     
     
@@ -96,7 +96,8 @@ module.exports = {
   },
   methods: {
     clickNo: function() {
-      this.template = 'none';
+      this.template = "";
+      this.clickYes = function(){};
     },
     clickYes: function() {
       

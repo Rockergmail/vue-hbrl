@@ -66,6 +66,7 @@
 
 <div id="wrapper">
 	<loading :show="showLoading"></loading>
+	<x-popup :template="pType" :clickYes="pClickYes"></x-popup>
 	<progress :percent.sync="percent" v-if="showProgress" :opacity.sync="opacity"></progress>
 	<x-toast :t-string="toastString" :t-time="toastTime" :t-type.sync="toastType" :t-width="toastWidth"></x-toast>
 	<router-view></router-view>
@@ -74,8 +75,18 @@
 </template>
 
 <script>
+import progress from "vux/src/components/progress"
+import loading from "vux/src/components/loading"
+import xPopup from "./common/xPopup"
+import xToast from "./common/xToast"
 
 module.exports = {
+	components: {
+		"progress": progress,
+		"loading": loading,
+		"x-popup": xPopup,
+		"x-toast": xToast
+	},
 	data () {
 		return {
 			// loading & progress组件相关
@@ -91,11 +102,15 @@ module.exports = {
 			toastType: "",
 			toastString: "",
 
+			// x-popup相关
+			pClickYes: function(){},
+			pType: "",
+
 			// 客户端地址封装
 			HTTP: 'http://',
-			// CLIENT_IP: "127.0.0.1",
+			CLIENT_IP: "127.0.0.1",
 			// CLIENT_IP: "172.16.103.61",
-			CLIENT_IP: "172.16.103.111",
+			// CLIENT_IP: "172.16.103.111",
 		    CLIENT_PORT: "40000"
 		}
 	},
@@ -109,10 +124,11 @@ module.exports = {
 		CLIENT_URL: function(){
 			return {
 				//　获取限时任务列表
-				"getMissionList": this.CLIENT_LINK + "/GetSourceData",
-				"getMissionDetail": this.CLIENT_LINK + "/TaskDetail",
+				"taskList": this.CLIENT_LINK + "/GetSourceData",
+				"taskDetail": this.CLIENT_LINK + "/TaskDetail",
 				"snatchTask": this.CLIENT_LINK + "/SnatchTask",
 				"giveUpTask": this.CLIENT_LINK + "/GiveUpTask",
+				"reviewTask": this.CLIENT_LINK + "/ReviewTask",
 				// 小助手心跳检查
 				"ping": this.CLIENT_LINK + "/ping",
 				"copy": this.CLIENT_LINK + "/CopyKeyWord"
@@ -155,6 +171,12 @@ module.exports = {
 			this.toastTime = time;
 			this.toastType = type;
 			this.toastWidth = tWidth
+		},
+
+		// x-popup相关
+		popUpStart: function(type, fn=function(){}) {
+			this.pType = type;
+			this.pClickYes = fn;
 		},
 
 		// 小助手相关

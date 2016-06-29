@@ -148,7 +148,13 @@ module.exports = {
     },
     route: {
         data: function(transition) {
-            return this.$http.get(this.$root.CLIENT_URL.getMissionDetail + "?adid=" + this.$route.query.adid).then(
+            return this.$http.get(
+                this.$root.CLIENT_URL.taskDetail,
+                {
+                    parmas:{
+                        adid:  this.$route.parmas.adid
+                    }
+                }).then(
                 function (response) {
                     var getData = response.json(response.data);
                     if (getData.c === 0) {

@@ -6,10 +6,7 @@ var Vue = require("vue"),
 
 import app from "./components/App"
 import Home from './components/Home'
-import progress from "vux/src/components/progress"
-import loading from "vux/src/components/loading"
-import xPopup from "./components/common/xPopup"
-import xToast from "./components/common/xToast"
+
 
 	// Debug mode
 	Vue.config.debug = true;
@@ -22,10 +19,7 @@ var router = new VueRouter();
 
 	// 注册组件
 	// Vue.component("x-header", xHeader);
-	Vue.component("loading", loading);
-	Vue.component("progress", progress);
-	Vue.component('x-popup', xPopup);
-	Vue.component('x-toast', xToast);
+
 
 	// 路由表
 	router.map({
@@ -39,7 +33,8 @@ var router = new VueRouter();
 				require(['./components/TimedList.vue'], resolve);
 			}
 		},
-		'/timedDetail': {
+		'/timedDetail/:adid': {
+			name: "detail",
 			component: function(resolve){
 				require(['./components/TimedDetail.vue'], resolve);
 			}
@@ -93,9 +88,10 @@ var router = new VueRouter();
 
 	// 路由勾子canUse之前
 	router.beforeEach(function(transition){
-		// if (transition.from.path == "/timedDetail") {
-		// 	alert("you are a bitch")
-		// }
+		if (transition.from.name == "detail") {
+			router.app.
+			transition.abort()
+		}
 		router.app.resetLoading();
 	    transition.next();
 	})
