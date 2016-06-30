@@ -14,12 +14,14 @@
 </template>
 
 <script>
+// FIXME: timeout不能clear
+
 import toast from 'vux/src/components/toast'
 
 module.exports = {
   props:{
     tType: {
-      type: String,
+      type: Number,
       twoWay: true
     },
     tTime: {
@@ -29,7 +31,8 @@ module.exports = {
       type: String
     },
     tString: {
-      type: String
+      type: String,
+      twoWay: true
     }
   },
   components: {
@@ -37,30 +40,27 @@ module.exports = {
   },
   data () {
     return {
-      tShow: false,
-      timeout: null
+      timer: null
     }
   },
   watch: {
     tType: function (val) {
-      var allType = ['text', "warn", "cancel", "success"];
-      if (allType.indexOf(val) > -1) {
-        this.tShow = true
+      if (val != -1) {
+        this.resetToast()
       }
     },
-    tShow: function (val) {
-      if (val) {
-        var _this = this;
-        clearTimeout(this.timeout);
-        this.timeout = setTimeout(function(){
-          _this.tShow = false;
-
-          clearTimeout(_this.timeout2);
-          _this.timeout2 = setTimeout(function(){
-            _this.tType = "";
-          }, _this.tTime)
-        }, _this.tTime);
-      }
+    tString: function (val) {
+      this.resetToast()
+    }
+  },
+  methods: {
+    resetToast: function(){
+      var _this = this;
+      clearTimeout(this.timer);
+      this.timer = null ;
+      this.timer = setTimeout(function(){
+        _this.tType = -1
+      }, this.tTime);
     }
   }
 }

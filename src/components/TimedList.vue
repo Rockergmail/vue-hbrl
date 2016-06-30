@@ -114,7 +114,7 @@ module.exports = {
         return {
             data: {d:[]},
             page: 1,
-            amount: 10,
+            amount: 100,
             flag: true, // 用于防止请求过程中重复请求
             loadall: false, // 是否加载完毕
             nomission: false, // 没有任务
@@ -191,7 +191,7 @@ module.exports = {
                 {
                     params:{
                         page: this.page,
-                        type: 0,
+                        type: 1,
                         amount: this.amount
                         // type为0是普通任务，1为限时任务，2为深度任务
                     }

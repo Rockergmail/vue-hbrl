@@ -24,10 +24,38 @@
     }
     /*.weui_progress_inner_bar{background: yellow}*/
     .weui_progress_opr{display: none;}
-    .weui_progress_inner_bar.js_progress{
-    	-webkit-transition: width .6s ease-in-out, opacity .6s ease-in;
-    	transition: width .6s ease-in-out, opacity .6s ease-in;
+    .weui_progress_inner_bar.js_progress.effect1{
+    	-webkit-animation: animation1 1s ease-in-out;
+    	animation: animation1 1s ease-in-out;
+    	opacity: 1;
+    	width:30%;
     }
+    .weui_progress_inner_bar.js_progress.effect2{
+    	-webkit-animation: animation2 .6s ease-in-out;
+    	animation: animation2 .6s ease-in-out;
+    	opacity: 0;
+    	width:100%;
+    }
+
+	@-webkit-keyframes animation1{
+		0%{opacity: 1; width: 0;}
+		100%{opacity: 1; width: 30%;}
+	}
+
+	@keyframes animation1{
+		0%{opacity: 1; width: 0;}
+		100%{opacity: 1; width: 30%;}
+	}
+
+	@-webkit-keyframes animation2{
+		0%{opacity: 1; width: 30%;}
+		100%{opacity: 0; width: 100%;}
+	}
+
+	@keyframes animation2{
+		0%{opacity: 1; width: 30%;}
+		100%{opacity: 0; width: 100%;}
+	}
 
     /*reset toast*/
     #ximi_toast .weui_toast{
@@ -67,8 +95,8 @@
 <div id="wrapper">
 	<loading :show="showLoading"></loading>
 	<x-popup :p-type.sync="pType" :custom-click-yes="pClickYes"></x-popup>
-	<progress :percent.sync="percent" v-if="showProgress" :opacity.sync="opacity"></progress>
-	<x-toast :t-string="toastString" :t-time="toastTime" :t-type.sync="toastType" :t-width="toastWidth"></x-toast>
+	<progress :effect1.sync="effect1" :effect2.sync="effect2"></progress>
+	<x-toast :t-string.sync="toastString" :t-time="toastTime" :t-type.sync="toastType" :t-width="toastWidth"></x-toast>
 	<router-view></router-view>
 </div>
 
@@ -90,16 +118,15 @@ module.exports = {
 	data () {
 		return {
 			// loading & progress组件相关
+			loadingTimer: null,
+			effect1: false,
+			effect2: false,
 			showLoading: false,
-			showProgress: false,
-			percent:0,
-			opacity:1,
-			timer: null,
 
 			// x-toast相关
 			toastWidth: "",
 			toastTime: 0,
-			toastType: "",
+			toastType: -1,
 			toastString: "",
 
 			// x-popup相关
@@ -108,8 +135,8 @@ module.exports = {
 
 			// 客户端地址封装
 			HTTP: 'http://',
-			// CLIENT_IP: "127.0.0.1",
-			CLIENT_IP: "172.16.103.61",
+			CLIENT_IP: "127.0.0.1",
+			// CLIENT_IP: "172.16.103.61",
 			// CLIENT_IP: "172.16.103.111",
 			// CLIENT_IP: "192.168.1.138",
 		    CLIENT_PORT: "40000"
@@ -141,33 +168,30 @@ module.exports = {
 		// loading & progress组件相关
 		endLoading: function(status){
 			if (status) {
-				clearTimeout(this.timer)
-				this.showLoading = false
-                this.opacity = 0
-                this.percent = 100  
+				
+				clearTimeout(this.loadingTimer);
+				this.showLoading = false;
+				this.effect2 = true;
+				console.log("endLoading")
 			}
-			console.log("endLoading")
 		},
 		startLoading: function() {
-			var _this = this
-			// this.resetLoading()
-			this.showProgress = true
-			this.percent = 30
-			this.timer = setTimeout(function(){
-			    _this.showLoading = true
+			var _this = this;
+			this.effect1 = true;
+			this.loadingTimer = setTimeout(function(){
+				_this.showLoading = true;
 			}, 2000)
 			console.log("startLoading")
 		},
 		resetLoading: function() {
-			this.showLoading = false
-			this.showProgress = false
-			this.opacity = 1
-			this.percent = 0
+			
+			this.effect1 = false;
+			this.effect2 = false;
 			console.log("resetLoading")
 		},
 
 		// x-toast相关
-		toastStart: function(str, time=2000, type="text", tWidth="80%") {
+		toastStart: function(str, time=2000, type=0, tWidth="80%") {
 			this.toastString = str;
 			this.toastTime = time;
 			this.toastType = type;

@@ -92,6 +92,7 @@ var router = new VueRouter();
 		// 	router.app.popupStart("giveup",function(){alert("u son of bitch")})
 		// 	transition.abort()
 		// }
+		router.app.endLoading(true);
 		router.app.resetLoading();
 	    transition.next();
 	})
