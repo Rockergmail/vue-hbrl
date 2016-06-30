@@ -151,7 +151,8 @@ module.exports = {
             return this.$http.get(
                 this.$root.CLIENT_URL.taskDetail,
                 {
-                    params:{
+                    // params:{
+                    paraxms:{
                         adid: this.$route.params.adid
                     }
                 }).then(
@@ -161,13 +162,13 @@ module.exports = {
                         this.data = getData.d
                         this.$root.endLoading(this.$loadingRouteData)
                     } else {
-                        alert("c is -1")
-                        // emit to popup fail stuff
+                        this.$root.toastStart("反正我获取不到！哼╭(╯^╰)╮");
+                        this.$root.giveUpTransition(transition)
                     }
                 },
                 function (response) {
-                    alert("Opsss");
-                    // emit to popup fail stuff
+                    this.$root.toastStart("反正我获取不到！哼╭(╯^╰)╮");
+                    this.$root.giveUpTransition(transition)
                 });
         },
         waitForData: true

@@ -109,9 +109,9 @@ module.exports = {
 			// 客户端地址封装
 			HTTP: 'http://',
 			// CLIENT_IP: "127.0.0.1",
-			// CLIENT_IP: "172.16.103.61",
+			CLIENT_IP: "172.16.103.61",
 			// CLIENT_IP: "172.16.103.111",
-			CLIENT_IP: "192.168.1.138",
+			// CLIENT_IP: "192.168.1.138",
 		    CLIENT_PORT: "40000"
 		}
 	},
@@ -180,6 +180,12 @@ module.exports = {
 			this.pClickYes = fn;
 		},
 
+
+		// transition stuff
+		giveUpTransition: function(transition){
+			transition.abort();
+			this.endLoading(true);
+		},
 		// 小助手相关
 		/**
 	     *  签名生成算法

@@ -2,8 +2,13 @@
 
   <div id="ximi_toast">
     <!-- 超时 -->
-    <toast :show="tShow" :type="tType" :time="tTime" :width="tWidth">{{ tString }}</toast>
+    <toast :show="0 == tType" type="text" :time="tTime" :width="tWidth">{{ tString }}</toast>
 
+    <toast :show="1 == tType" type="success" :time="tTime" :width="tWidth">{{ tString }}</toast>
+
+    <toast :show="2 == tType" type="cancel" :time="tTime" :width="tWidth">{{ tString }}</toast>
+
+    <toast :show="3 == tType" type="warn" :time="tTime" :width="tWidth">{{ tString }}</toast>
     
   </div>
 </template>
@@ -38,7 +43,6 @@ module.exports = {
   },
   watch: {
     tType: function (val) {
-      console.log(val)
       var allType = ['text', "warn", "cancel", "success"];
       if (allType.indexOf(val) > -1) {
         this.tShow = true

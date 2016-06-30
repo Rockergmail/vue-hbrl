@@ -106,7 +106,7 @@ module.exports = {
     },
     route: {
         data: function(transition) {
-            return this.loadData()
+            return this.getTaskList()
         },
         waitForData: true
     },
@@ -114,7 +114,7 @@ module.exports = {
         return {
             data: {d:[]},
             page: 1,
-            amount: 20,
+            amount: 10,
             flag: true, // 用于防止请求过程中重复请求
             loadall: false, // 是否加载完毕
             nomission: false, // 没有任务
@@ -130,7 +130,14 @@ module.exports = {
             this.currentType = type;
         },
         load (uuid) {
-            this.loadData(uuid)
+            // 请求中，不可继续请求
+            if (!this.flag) {
+                return false
+            // 请求完毕，可以继续请求
+            } else {
+                this.flag = false
+                this.getTaskList(uuid)
+            }
         },
         goPlay (id) {
             this.tShow = true;
@@ -145,7 +152,6 @@ module.exports = {
                     var getData = response.json(response.data);
                     this.tString="跳转中";
                     if (getData.c === 0) {
-                       alert(getData.msg)
                        this.$router.go(
                         { 
                             name: 'detail',
@@ -179,65 +185,59 @@ module.exports = {
                     alert("rocked")
                 });
         },
-        loadData: function(uuid) {
-            // 请求中，不可继续请求
-            if (!this.flag) {
-                return false
-            // 请求完毕，可以继续请求
-            } else {
-                this.flag = false
-                return this.$http.get(
-                    this.$root.CLIENT_URL.taskList,
-                    {
-                        params:{
-                            page: this.page,
-                            type: 1,
-                            amount: this.amount
-                            // type为0是任务列表，1为任务详情
-                        }
-                        // ,
-                        // _timeout: 500
-                    }).then(
-                    function (response) {
-                        var getData = response.json(response.data)
-                        this.$root.endLoading(this.$loadingRouteData)
-                        // 返回数据状态正常
-                        if (getData.c === 0) {
-                            // 有任务数据返回
-                            if (getData.d.length != 0) {
-                                this.data.d = this.data.d.concat(getData.d)
-                                this.$nextTick(function(){
-                                    this.$broadcast('scroller:reset', this.$refs.scroller.uuid)
-                                this.page++;
-                                })
-                            // 无任务数据返回
+        getTaskList: function(uuid) {
+            return this.$http.get(
+                this.$root.CLIENT_URL.taskList,
+                {
+                    params:{
+                        page: this.page,
+                        type: 0,
+                        amount: this.amount
+                        // type为0是普通任务，1为限时任务，2为深度任务
+                    }
+                    // ,
+                    // _timeout: 500
+                }).then(
+                function (response) {
+                    var getData = response.json(response.data)
+                    this.$root.endLoading(this.$loadingRouteData)
+                    // 返回数据状态正常
+                    if (getData.c === 0) {
+                        // 有任务数据返回
+                        if (getData.d.length != 0) {
+                            this.data.d = this.data.d.concat(getData.d)
+                            this.$nextTick(function(){
+                                this.$broadcast('scroller:reset', this.$refs.scroller.uuid)
+                            this.page++;
+                            })
+                        // 无任务数据返回
+                        } else {
+                            if (this.page == 1) {
+                                // 没有任务的提示
+                                this.nomission = true
                             } else {
-                                if (this.page == 1) {
-                                    // 没有任务的提示
-                                    this.nomission = true
-                                } else {
-                                    // 任务加载完毕的提示
-                                    this.loadall = true;
-                                    this.$root.toastStart("加载完毕");
-                                }
+                                // 任务加载完毕的提示
+                                this.loadall = true;
+                                this.$root.toastStart("加载完毕");
                             }
-                        // 返回数据状态不正常
-                        } else {
-                            this.$root.toastStart("c!=0:一大波用户在涌入，请稍后再试！");
                         }
-                        this.flag = true;
-                        this.$broadcast('pullup:reset', uuid);
-                    },
-                    function (response) {
-                        if (response.statusText="request timeout") {
-                            this.$root.toastStart("timeout:一大波用户在涌入，请稍后再试！");
-                        } else {
-                            this.$root.toastStart("error:一大波用户在涌入，请稍后再试！");
-                        }
-                        this.$broadcast('pullup:reset', uuid)
-                        this.flag = true
-                    });
-                }
+                    // 返回数据状态不正常
+                    } else {
+                        this.$root.toastStart("c!=0:一大波用户在涌入，请稍后再试！");
+                    }
+                    this.flag = true;
+                    this.$broadcast('pullup:reset', uuid);
+                },
+                function (response) {
+                    
+                    if (response.statusText="request timeout") {
+                        this.$root.toastStart("timeout:一大波用户在涌入，请稍后再试！");
+                    } else {
+                        this.$root.toastStart("error:一大波用户在涌入，请稍后再试！");
+                    }
+                    this.$broadcast('pullup:reset', uuid)
+                    this.flag = true
+                });
         }
     },
     ready: function() {

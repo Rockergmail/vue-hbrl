@@ -88,10 +88,10 @@ var router = new VueRouter();
 
 	// 路由勾子canUse之前
 	router.beforeEach(function(transition){
-		if (transition.from.name == "detail") {
-			router.app.popupStart("giveup",function(){alert("u son of bitch")})
-			transition.abort()
-		}
+		// if (transition.from.name == "detail") {
+		// 	router.app.popupStart("giveup",function(){alert("u son of bitch")})
+		// 	transition.abort()
+		// }
 		router.app.resetLoading();
 	    transition.next();
 	})
