@@ -2,7 +2,7 @@
   <div :id="'vux-progress-' + uuid" class="vux-progress" v-if="template > 0"></div>
   <div class="weui_progress" v-if="template === 0">
     <div class="weui_progress_bar">
-      <div class="weui_progress_inner_bar js_progress" :style="{width: percent + '%', opacity: opacity}"></div>
+      <div class="weui_progress_inner_bar js_progress" :class="{'effect1': effect1, 'effect2': effect2}"></div>
     </div>
     <a href="javascript:;" class="weui_progress_opr">
       <i class="weui_icon_cancel" @click="cancel"></i>
@@ -20,14 +20,14 @@ export default {
       type: Number,
       default: 0
     },
-    percent: {
-      type: Number,
-      default: 0,
+    effect1: {
+      type: Boolean,
+      default: false,
       twoWay: true
     },
-    opacity: {
-      type: Number,
-      default: 1,
+    effect2: {
+      type: Boolean,
+      default: false,
       twoWay: true
     }
   },
