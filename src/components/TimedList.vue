@@ -45,7 +45,6 @@
 
 <scroller lock-x scrollbar-y :height="listHeight" v-ref:scroller use-pullup  @pullup:loading="load" :pullup-status.sync="pullupStatus">
 <section id="list">
-    <!-- <flexbox :gutter="0" class="mission-item" v-for="m in data.d" @click="giveUpTask(m.id)"> -->
     <flexbox :gutter="0" class="mission-item" v-for="m in data.d" @click="goPlay(m.id)">
         <flexbox-item :span="2/10" class="item-icon">
             <img :src="m.iconUrl" width="80%">
@@ -106,7 +105,7 @@ module.exports = {
     },
     route: {
         data: function(transition) {
-            return this.getTaskList()
+            return this.getTaskList(transition)
         },
         waitForData: true
     },
@@ -114,7 +113,7 @@ module.exports = {
         return {
             data: {d:[]},
             page: 1,
-            amount: 100,
+            amount: 10,
             flag: true, // 用于防止请求过程中重复请求
             loadall: false, // 是否加载完毕
             nomission: false, // 没有任务
@@ -185,14 +184,14 @@ module.exports = {
                     alert("rocked")
                 });
         },
-        getTaskList: function(uuid) {
+        getTaskList: function(transition) {
             return this.$http.get(
                 this.$root.CLIENT_URL.taskList,
                 {
                     params:{
                         page: this.page,
                         type: 1,
-                        amount: this.amount
+                        // amount: this.amount
                         // type为0是普通任务，1为限时任务，2为深度任务
                     }
                     // ,
@@ -224,18 +223,19 @@ module.exports = {
                     // 返回数据状态不正常
                     } else {
                         this.$root.toastStart("c!=0:一大波用户在涌入，请稍后再试！");
+                        // this.$root.giveUpTransition(transition)
                     }
                     this.flag = true;
-                    this.$broadcast('pullup:reset', uuid);
+                    this.$broadcast('pullup:reset', this.$refs.scroller.uuid);
                 },
                 function (response) {
-                    
+                    // this.$root.giveUpTransition(transition)
                     if (response.statusText="request timeout") {
                         this.$root.toastStart("timeout:一大波用户在涌入，请稍后再试！");
                     } else {
                         this.$root.toastStart("error:一大波用户在涌入，请稍后再试！");
                     }
-                    this.$broadcast('pullup:reset', uuid)
+                    this.$broadcast('pullup:reset', this.$refs.scroller.uuid)
                     this.flag = true
                 });
         }

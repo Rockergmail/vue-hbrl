@@ -151,8 +151,8 @@ module.exports = {
             return this.$http.get(
                 this.$root.CLIENT_URL.taskDetail,
                 {
-                    // params:{
-                    paraxms:{
+                    params:{
+                    // paraxms:{
                         adid: this.$route.params.adid
                     }
                 }).then(
@@ -199,6 +199,12 @@ module.exports = {
         },
         startMission: function() {
             window.location.href="itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/search"
+        },
+        getMoney: function() {
+            // popup层的制作
+        },
+        giveUpTask: function() {
+            // popup层的制作
         }
     },
     ready: function() {
