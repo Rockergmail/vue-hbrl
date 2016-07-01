@@ -78,7 +78,7 @@
                     <span class="mission-tag" v-if="data.isfree">免费</span>
                     <span class="mission-tag" v-else>付费</span>
 
-                    <span v-if="tasktype==1" class="mission-tag">剩 <span class="mission-rest">{{data.remainNumber}}</span> 份</span>
+                    <span v-if="tasktype == 1" class="mission-tag">剩 <span class="mission-rest">{{data.remainNumber}}</span> 份</span>
                 </p>
             </div>
             <i class="dot-top"></i>
@@ -91,7 +91,9 @@
     </flexbox>
 
     <!-- 任务提示 -->
-    <div id="mission-tips" v-if="tasktype!=2">
+    <!-- FIXME：这里需要根据tasktype来显示需求 -->
+    <!-- 1的话就这样，0和2就需要读数据 -->
+    <div id="mission-tips" v-if="tasktype != 2">
         <ul>
             <li>1.点击“复制关键词”</li>
             <li>2.点击“马上开始任务”进入App Store<span class="red">粘贴搜索</span></li>
