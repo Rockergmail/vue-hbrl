@@ -2,7 +2,8 @@
   <div class="x-header">
     <div class="x-header-left">
       <!-- back -->
-      <a class="x-header-back" @click.preventDefault v-show="leftOptions.showBack" @click="onClickBack">{{leftOptions.backText}}</a>
+      <!-- <a class="x-header-back" @click.preventDefault v-show="leftOptions.showBack" @click="onClickBack">{{leftOptions.backText}}</a> -->
+      <a class="x-header-back" v-show="leftOptions.showBack" @click="onClickBack">{{leftOptions.backText}}</a>
 
       <!-- userinfo -->
       <!-- <a class="x-header-userinfo" @click.preventDefault v-show="leftOptions.showUserinfo" v-link="{path: '/userinfo'}">UserInfo</a>
@@ -46,12 +47,18 @@ export default {
           refreshLink: ""
         }
       }
+    },
+    myClickBack: {
+      type: Function,
+      twoWay: true
     }
   },
   methods: {
     onClickBack () {
       if (this.leftOptions.preventGoBack) {
-        this.$emit('on-click-back')
+        this.myClickBack();
+        console.log("you clicked back")
+        // this.$emit('on-click-back')
       } else {
         history.back()
       }
@@ -67,6 +74,9 @@ export default {
       }, function (response) {
           alert("Opsss");
       });
+    },
+
+    clickBack () {
     }
   }
 }
