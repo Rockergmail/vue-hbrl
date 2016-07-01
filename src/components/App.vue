@@ -94,7 +94,8 @@
 
 <div id="wrapper">
 	<loading :show="showLoading"></loading>
-	<x-popup :p-type.sync="pType" :custom-click-yes="pClickYes"></x-popup>
+	<x-popup :p-type.sync="pType" :custom-click-yes.sync="pClickYes" :p-value.sync="pValue"></x-popup>
+	<!-- <x-popup :p-type.sync="pType" :custom-click-yes.sync="pClickYes"></x-popup> -->
 	<progress :effect1.sync="effect1" :effect2.sync="effect2"></progress>
 	<x-toast :t-string.sync="toastString" :t-time="toastTime" :t-type.sync="toastType" :t-width="toastWidth"></x-toast>
 	<router-view></router-view>
@@ -130,13 +131,14 @@ module.exports = {
 			toastString: "",
 
 			// x-popup相关
-			pClickYes: function(){},
 			pType: "",
+			pValue: {},
+			pClickYes: function(){},
 
 			// 客户端地址封装
 			HTTP: 'http://',
-			// CLIENT_IP: "127.0.0.1",
-			CLIENT_IP: "172.16.103.61",
+			CLIENT_IP: "127.0.0.1",
+			// CLIENT_IP: "172.16.103.61",
 			// CLIENT_IP: "172.16.103.111",
 			// CLIENT_IP: "192.168.1.138",
 		    CLIENT_PORT: "40000"
@@ -184,8 +186,14 @@ module.exports = {
 		},
 		resetLoading: function() {
 			
+			// reset progress
 			this.effect1 = false;
 			this.effect2 = false;
+
+			// reset x-popup
+			if (this.pType !== "getMoneySuccess") {
+				this.pType = "";
+			}
 			console.log("resetLoading")
 		},
 
@@ -198,8 +206,9 @@ module.exports = {
 		},
 
 		// x-popup相关
-		popupStart: function(type, fn=function(){}) {
+		popupStart: function(type, val={}, fn=function(){}) {
 			this.pType = type;
+			this.pValue = val;
 			this.pClickYes = fn;
 		},
 

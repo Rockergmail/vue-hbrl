@@ -55,11 +55,12 @@
     }
 </style>
     
-<div id="timedDetail">
+<div id="taskDetail">
 <sticky>
     <x-header
         :left-options="{showBack:true, preventGoBack: true}"
         :right-options="{showMore:true}"
+        :my-click-back.sync="clickBack"
     >任务详情</x-header>
 </sticky>
 
@@ -77,7 +78,7 @@
                     <span class="mission-tag" v-if="data.isfree">免费</span>
                     <span class="mission-tag" v-else>付费</span>
 
-                    <span class="mission-tag">剩 <span class="mission-rest">{{data.remainNumber}}</span> 份</span>
+                    <span v-if="tasktype==1" class="mission-tag">剩 <span class="mission-rest">{{data.remainNumber}}</span> 份</span>
                 </p>
             </div>
             <i class="dot-top"></i>
@@ -90,7 +91,7 @@
     </flexbox>
 
     <!-- 任务提示 -->
-    <div id="mission-tips">
+    <div id="mission-tips" v-if="tasktype!=2">
         <ul>
             <li>1.点击“复制关键词”</li>
             <li>2.点击“马上开始任务”进入App Store<span class="red">粘贴搜索</span></li>
@@ -139,7 +140,7 @@ import flexbox from "vux/src/components/flexbox/index.vue"
 import flexboxItem from "vux/src/components/flexbox-item/index.vue"
 
 module.exports = {
-    name: 'timedDetail',
+    name: 'taskDetail',
     components: {
         "sticky": sticky,
         "x-header": xHeader,
@@ -148,11 +149,11 @@ module.exports = {
     },
     route: {
         data: function(transition) {
+            this.$root.toastType = -1;
             return this.$http.get(
                 this.$root.CLIENT_URL.taskDetail,
                 {
                     params:{
-                    // paraxms:{
                         adid: this.$route.params.adid
                     }
                 }).then(
@@ -175,14 +176,15 @@ module.exports = {
     },
     data:function () {
         return {
-            data: {}
+            data: {},
+            tasktype: this.$route.params.tasktype
         }
     },
     methods: {
         copyKey: function(){
             this.$http.get(
                 this.$root.CLIENT_URL.copy,
-                {   parmas:{
+                {   params:{
                         keyword: this.data.keyWord
                     }
                 }).then(
@@ -201,14 +203,39 @@ module.exports = {
             window.location.href="itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/search"
         },
         getMoney: function() {
-            // popup层的制作
+            // 向后台查询
+            // this.$root.popupStart("getMoneyFail");
+            this.$root.popupStart("getMoneySuccess", {
+                taskType: this.tasktype,
+                taskName: this.data.name,
+                taskMoney: this.data.point/100
+            });
+            // this.$router.go({path: '/taskList'})
         },
-        giveUpTask: function() {
-            // popup层的制作
+        clickBack: function() {
+            this.$root.popupStart("giveup", {}, function(){
+                this.$http.get(
+                this.$root.CLIENT_URL.giveUpTask,
+                {
+                    params:{
+                        adid: this.$route.params.adid
+                    }
+                }).then(
+                function (response) {
+                    var getData = response.json(response.data)
+                    if (getData.c === 0) {
+                       this.$router.go({path: '/taskList'}) 
+                    } else {
+                        this.$root.toastStart("c!=0 放弃失败")
+                    }
+                },
+                function (response) {
+                    this.$root.toastStart("error 放弃失败")
+                });
+            });
         }
     },
     ready: function() {
-        console.log(this.data)
     }
 };
 </script>

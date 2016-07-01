@@ -102,13 +102,17 @@ module.exports = {
         return {
             data: {},
             menus: [{
-                    path: "/timedList",
+                    path: "/taskList/1",
                     pic: "http://cdn.hongbaorili.com/wind/static/images/icon/pro.png",
                     title: "限时任务"
                 }, {
-                    path: "/deep",
+                    path: "/taskList/2",
                     pic: "http://www.iconpng.com/download/png/100970",
                     title: "深度任务"
+                }, {
+                    path: "/taskList/0",
+                    pic: "http://www.iconpng.com/download/png/100970",
+                    title: "联盟任务"
                 }, {
                     path: "/invite",
                     pic: "http://www.iconpng.com/download/png/100970",
@@ -148,5 +152,5 @@ module.exports = {
         });
         // 这里要用ready而不是route.data，是因为要先检测到它是否打开小助手来登陆
     }
-};
+}
 </script>

@@ -31,7 +31,7 @@
     
 </style>
     
-<div id="timed-list">
+<div id="taskList">
 <sticky id="fuckme">
     <x-header
         :left-options="{showBack:true, preventGoBack: true}"
@@ -39,12 +39,37 @@
     >限时任务</x-header>
 </sticky>
 
-<toast :time="10000" :show="tShow">{{tString}}</toast>
-
 <div v-if="nomission">暂时没有任务哦～</div>
 
 <scroller lock-x scrollbar-y :height="listHeight" v-ref:scroller use-pullup  @pullup:loading="load" :pullup-status.sync="pullupStatus">
 <section id="list">
+    <!-- 普通任务 & 深度任务 -->
+    <template v-if="tasktype != 1">
+    <flexbox :gutter="0" class="mission-item" v-for="m in data.d" @click="goPlay(m.id)">
+        <flexbox-item :span="2/10" class="item-icon">
+            <img :src="m.iconUrl" width="80%">
+        </flexbox-item>
+
+        <flexbox-item :span="5/10" class="item-text">
+            <div class="mission-info">
+                <p class="mission-title">{{m.name}}</p>
+                <p class="tag">
+                    <span class="mission-tag" v-if="m.isfree">免费</span>
+                    <span class="mission-tag" v-else>付费</span>
+                </p>
+            </div>
+            <i class="dot-top"></i>
+            <i class="dot-bottom"></i>
+        </flexbox-item>
+
+        <flexbox-item :span="3/10" class="item-status">
+            <p class="mission-point" v-else><span class="rmb">￥</span>{{m.point/100}}</p>
+        </flexbox-item>
+    </flexbox>
+    </template>
+
+    <!-- 限时任务 -->
+    <template v-else>
     <flexbox :gutter="0" class="mission-item" v-for="m in data.d" @click="goPlay(m.id)">
         <flexbox-item :span="2/10" class="item-icon">
             <img :src="m.iconUrl" width="80%">
@@ -69,6 +94,7 @@
             <p class="mission-point" v-else><span class="rmb">￥</span>{{m.point/100}}</p>
         </flexbox-item>
     </flexbox>
+    </template>
 </section>
 
 <!--pullup slot-->
@@ -93,7 +119,7 @@ import spinner from "vux/src/components/spinner"
 import toast from 'vux/src/components/toast'
 
 module.exports = {
-    name: 'timedList',
+    name: 'taskList',
     components: {
         "sticky": sticky,
         "x-header": xHeader,
@@ -114,14 +140,11 @@ module.exports = {
             data: {d:[]},
             page: 1,
             amount: 10,
+            tasktype: this.$route.params.tasktype,
             flag: true, // 用于防止请求过程中重复请求
             loadall: false, // 是否加载完毕
             nomission: false, // 没有任务
             pullupStatus: 'default',
-
-            //toast 
-            tShow: false,
-            tString: "抢ing"
         }
     },
     methods: {
@@ -139,7 +162,10 @@ module.exports = {
             }
         },
         goPlay (id) {
-            this.tShow = true;
+
+            if (this.tasktype == 1) {
+                this.$root.toastStart("抢任务中...");
+            }
             this.$http.get(
                 this.$root.CLIENT_URL.snatchTask,
                 {
@@ -149,7 +175,9 @@ module.exports = {
                 }).then(
                 function (response) {
                     var getData = response.json(response.data);
-                    this.tString="跳转中";
+                    if (this.tasktype == 1) {
+                        this.$root.toastStart("成功抢到任务！跳转中...");
+                    }
                     if (getData.c === 0) {
                        this.$router.go(
                         { 
@@ -161,28 +189,9 @@ module.exports = {
                     }
                 },
                 function (response) {
-                    alert("rocked")
+                    this.$root.toastStart("error: 宝宝不开心");
                 });
             
-        },
-        giveUpTask(id){
-            this.$http.get(
-                this.$root.CLIENT_URL.giveUpTask,
-                {
-                    params:{
-                        adid: id,
-                    }
-                }).then(
-                function (response) {
-                    var getData = response.json(response.data)
-                    if (getData.c === 0) {
-                       alert(getData.msg)
-                       // window.router.go({path: '/timedDetail?adid='+id}) 
-                    }
-                },
-                function (response) {
-                    alert("rocked")
-                });
         },
         getTaskList: function(transition) {
             return this.$http.get(
@@ -190,7 +199,7 @@ module.exports = {
                 {
                     params:{
                         page: this.page,
-                        type: 1,
+                        type: this.tasktype,
                         // amount: this.amount
                         // type为0是普通任务，1为限时任务，2为深度任务
                     }

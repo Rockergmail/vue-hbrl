@@ -28,15 +28,16 @@ var router = new VueRouter();
 			component: Vue.extend(Home)
 		},
 		// 限时任务
-		'/timedList': {
+		'/taskList/:tasktype': {
+			name: "list",
 			component: function(resolve){
-				require(['./components/TimedList.vue'], resolve);
+				require(['./components/TaskList.vue'], resolve);
 			}
 		},
-		'/timedDetail/:adid': {
+		'/taskDetail/:tasktype/:adid': {
 			name: "detail",
 			component: function(resolve){
-				require(['./components/TimedDetail.vue'], resolve);
+				require(['./components/TaskDetail.vue'], resolve);
 			}
 		},
 		// 个人信息
