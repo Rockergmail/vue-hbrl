@@ -91,9 +91,15 @@
     </flexbox>
 
     <!-- 任务提示 -->
-    <!-- FIXME：这里需要根据tasktype来显示需求 -->
-    <!-- 1的话就这样，0和2就需要读数据 -->
-    <div id="mission-tips" v-if="tasktype != 2">
+    <!-- 普通任务提示 -->
+    <div id="mission-tips" v-if="tasktype == 0">
+        <ul>
+            <li>{{data.adText}}</li>
+        </ul>
+    </div>
+
+    <!-- 限时任务提示 -->
+    <div id="mission-tips" v-if="tasktype == 1">
         <ul>
             <li>1.点击“复制关键词”</li>
             <li>2.点击“马上开始任务”进入App Store<span class="red">粘贴搜索</span></li>
@@ -102,12 +108,19 @@
         </ul>
     </div>
 
+    <!-- 深度任务提示 -->
+    <div id="mission-tips" v-if="tasktype == 1">
+        <ul>
+            <li>{{data.moreTasks.adText}}</li>
+        </ul>
+    </div>
+
     <!-- 任务步骤 -->
     <div id="mission-btn">
 
       <template v-if="!data.keyWord">
-        <flexbox :gutter="0" class="btn" @click="getMoney">
-            <flexbox-item class="step-text">完成后点此领钱</flexbox-item>
+        <flexbox :gutter="0" class="btn" @click="startMission">
+            <flexbox-item class="step-text">马上开始任务</flexbox-item>
         </flexbox>
       </template>  
 
@@ -162,8 +175,8 @@ module.exports = {
                 function (response) {
                     var getData = response.json(response.data);
                     if (getData.c === 0) {
-                        this.data = getData.d
-                        this.$root.endLoading(this.$loadingRouteData)
+                        this.data = getData.d;
+                        this.$root.endLoading(this.$loadingRouteData);
                     } else {
                         this.$root.toastStart("反正我获取不到！哼╭(╯^╰)╮");
                         this.$root.giveUpTransition(transition)
@@ -202,16 +215,27 @@ module.exports = {
                 });
         },
         startMission: function() {
-            window.location.href="itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/search"
+            if (this.tasktype != 2) {
+                if (this.data.keyWord) {
+                   window.location.href = "itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/search"
+                } else {
+                    window.location.href = this.data.downloadUrl;
+                }
+            } else {
+                this.$root.toastStart("任务开始，请自行打开该应用");
+            }
         },
         getMoney: function() {
             // 向后台查询
-            // this.$root.popupStart("getMoneyFail");
-            this.$root.popupStart("getMoneySuccess", {
-                taskType: this.tasktype,
-                taskName: this.data.name,
-                taskMoney: this.data.point/100
-            });
+            // 失败
+            this.$root.popupStart("getMoneyFail");
+
+            // 成功
+            // this.$root.popupStart("getMoneySuccess", {
+            //     taskType: this.taskTypeName,
+            //     taskName: this.data.name,
+            //     taskMoney: this.data.point/100
+            // });
             // this.$router.go({path: '/taskList'})
         },
         clickBack: function() {
@@ -237,7 +261,25 @@ module.exports = {
             });
         }
     },
+    computed: {
+        taskTypeName: function(){
+            switch (this.tasktype) {
+                case "0": 
+                    return "限时任务";
+                    break;
+                case "1":
+                    return "深度任务";
+                    break;
+                case "2":
+                    return "普通任务";
+                    break;
+                default:
+                    return "任务";
+            }
+        }
+    },
     ready: function() {
+        
     }
 };
 </script>
