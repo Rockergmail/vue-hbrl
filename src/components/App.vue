@@ -119,9 +119,12 @@ module.exports = {
 	},
 	data () {
 		return {
-			// 登陆相关
+			// 登录信息
 			token: "",
-			userId: 0,
+
+			// 路由相关
+			// routeHistory:[],
+			// currentRoute: 0,
 
 			// loading & progress组件相关
 			loadingTimer: null,
@@ -144,8 +147,8 @@ module.exports = {
 			HTTP: 'http://',
 			URL_SCHEME: 'zs20160606://',
 			// CLIENT_IP: "127.0.0.1",
-			CLIENT_IP: "172.16.8.243",
-			// CLIENT_IP: "172.16.8.224",
+			// CLIENT_IP: "172.16.8.243",
+			CLIENT_IP: "172.16.8.224",
 			// CLIENT_IP: "192.168.1.138",
 		    CLIENT_PORT: "40000",
 
@@ -228,6 +231,18 @@ module.exports = {
 			transition.abort();
 			this.endLoading(true);
 		},
+
+		// 路由相关
+		// afterLoaded: function() {
+		// 	this.routeHistory[this.currentRoute++] = this.$route.path;
+		// },
+		// onClickBack: function() {
+		// 	this.$router.go(this.routeHistory[this.currentRoute--]);
+		// },
+
+		// x-header相关
+
+
 		// 小助手相关
 		/**
 	     *  签名生成算法
@@ -362,14 +377,14 @@ module.exports = {
      	    {"sUrl":"http://test2.hongbaorili.com", 
      	     "sPath":"loginaction", 
      	     "sMethod":"POST", 
-     	     "cUrl":this.$root.CLIENT_LINK+"/rootaction",
+     	     "cUrl":this.$root.CLIENT_LINK + "/rootaction",
      	     "cMethod":"GET"}, 
-     	     function(x){
-     	     	_this.$broadcast("loginSuccess", true)
-     	     	console.log("成功");
+     	     function(response){
+     	     	_this.token = response.token; 
+     	     	_this.$broadcast("loginSuccess", true);
      	     }, 
-     	     function(x){
-     	     	console.log("失败")
+     	     function(response){
+     	     	this.$root.toastStart("error 登录失败");
      	     }
  	    );
      }

@@ -34,7 +34,7 @@
 <div id="taskList">
 <sticky id="fuckme">
     <x-header
-        :left-options="{showBack:true, preventGoBack: true}"
+        :left-options="{showBack:true}"
         :right-options="{showMore:true}"
     >限时任务</x-header>
 </sticky>
@@ -162,7 +162,6 @@ module.exports = {
             }
         },
         goPlay (id) {
-
             if (this.tasktype == 1) {
                 this.$root.toastStart("抢任务中...");
             }

@@ -60,7 +60,7 @@
     <x-header
         :left-options="{showBack:true, preventGoBack: true}"
         :right-options="{showMore:true}"
-        :my-click-back.sync="clickBack"
+        @my-click-back="clickBack"
     >任务详情</x-header>
 </sticky>
 
@@ -264,6 +264,8 @@ module.exports = {
                     this.$root.toastStart("error 放弃失败")
                 });
             });
+
+            return false
         }
     },
     computed: {
