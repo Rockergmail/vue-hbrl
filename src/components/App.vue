@@ -108,6 +108,7 @@ import progress from "vux/src/components/progress"
 import loading from "vux/src/components/loading"
 import xPopup from "./common/xPopup"
 import xToast from "./common/xToast"
+import md5 from "md5"
 
 module.exports = {
 	components: {
@@ -118,6 +119,10 @@ module.exports = {
 	},
 	data () {
 		return {
+			// 登陆相关
+			token: "",
+			userId: 0,
+
 			// loading & progress组件相关
 			loadingTimer: null,
 			effect1: false,
@@ -137,11 +142,15 @@ module.exports = {
 
 			// 客户端地址封装
 			HTTP: 'http://',
-			CLIENT_IP: "127.0.0.1",
-			// CLIENT_IP: "172.16.8.243",
+			URL_SCHEME: 'zs20160606://',
+			// CLIENT_IP: "127.0.0.1",
+			CLIENT_IP: "172.16.8.243",
 			// CLIENT_IP: "172.16.8.224",
 			// CLIENT_IP: "192.168.1.138",
-		    CLIENT_PORT: "40000"
+		    CLIENT_PORT: "40000",
+
+		    // 服务端地址封装
+		    SERVER: "http:// test2.hongbaorili.com"
 		}
 	},
 	computed: {
@@ -161,12 +170,13 @@ module.exports = {
 				"reviewTask": this.CLIENT_LINK + "/ReviewTask",
 				// 小助手心跳检查
 				"ping": this.CLIENT_LINK + "/ping",
-				"copy": this.CLIENT_LINK + "/CopyKeyWord"
+				"copy": this.CLIENT_LINK + "/CopyKeyWord",
+				"login": this.URL_SCHEME + "rootaction?page=login"
 
 			}
 		}
 	},
-	methods:{
+	methods: {
 		// loading & progress组件相关
 		endLoading: function(status){
 			if (status) {
@@ -253,7 +263,7 @@ module.exports = {
 	     *		   options.cMethod 跟客户端通讯的方法post,get
 	     *  @return {string|json}
 	     */
-    	getFromClient(params, options) {
+    	getFromClient(params, options, successCb, failCb) {
 
     		 // 由于ajax自动会将参数encode，所以进行md5之前要encode
         	var stringifyParams = JSON.stringify(params),
@@ -277,60 +287,92 @@ module.exports = {
 
             newParams.sign = this.getSignature(md5Json);
 
-        	this.$http({url: options.cUrl, method: options.cMethod, data: newParams}).then(
+        	this.$http({url: options.cUrl, method: options.cMethod, params: newParams}).then(
         		// success
         		function(response){
-        			return response;
+        			successCb(response);
         		},
         		// fail
         		function(response){
-        			return response;
+        			failCb(response);
         		})
         },
-        heartBeatCheck: function(type, options) {
-     		type = type || "normal";
-     		// option.
+        heartbeatCheck: function(transition, type, option, url) {
+        	var _this = this,
+	     		type = type || "normal",
+	     		option = option || {_timeout: 2000, interval: 2000},
+	     		url = this.CLIENT_URL.ping;
+
          	switch (type) {
-         	case "normal":
-         		var normalCounter = 0,
-         			normalTimer = setInterval(function(){
-    	     		Vue.http.post(option.url, {timeout: option.timeout}).then(
-    		     		// success
-    		     		function(){
-    		     			normalCounter++;
-    		     			if (normalCounter > 2) {
-    			     			clearInterval(normalTimer);
-    			     		} else {
-    		     				// get session and write it in cookie
-    		     			}
-    		     		},
-    		     		// fail
-    		     	 	function() {
-    		     	 		clearInterval(normalTimer);
-    		     	 		// pop up to startup assist
-    		 		});
-    	     	}, option.interval);
-         		break;
-         	case "mission":
-         		var missionCounter = 0,
-         			missionTimer = setInterval(function(){
-    	     		Vue.http.post(option.url, {timeout: option.timeout}).then(
-    		     		// success
-    		     		function(){ 
-    		     			missionCounter++;
-    		     			if (missionCounter < 3) {
-    		     				// get session and write it in cookie
-    		     			}
-    		     		},
-    		     		// fail
-    		     	 	function() {
-    		     	 		clearInterval(normalTimer);
-    		     	 		// pop up to startup assist
-    		 		});
-    	     	}, option.interval);
-    	     	break;
+         		// 普通心跳检查：只检查1次；失败就popup
+	         	case "normal":
+	     		// var normalCounter = 0,
+	     			// normalTimer = setInterval(function(){
+		     		return this.$http.get(url, {_timeout: option.timeout}).then(
+			     		// success
+			     		function(response){
+			     			// normalCounter++;
+			     			// if (normalCounter > 2) {
+				     		// 	clearInterval(normalTimer);
+				     		// } else {
+			     			// 	// get session and write it in cookie
+			     			// }
+			     			this.loginAction();
+			     		},
+			     		// fail
+			     	 	function(response){
+			     	 		var _this = this;
+			     	 		this.popupStart("activate",{}, function(){
+			     	 			location.href = _this.URL_SCHEME;
+			     	 		});
+			     	 		transition.abort();
+				 		}
+			 		);
+		     	// }, option.interval);
+	         		break;
+	         	// 任务心跳检查：一直检查，失败就popup
+	         	case "mission":
+	         		// var missionCounter = 0,
+	         		var missionTimer = setInterval(function(){
+	    	     		this.$http.get(url, {_timeout: option.timeout}).then(
+	    		     		// success
+	    		     		function(response){ 
+	    		     			missionCounter++;
+	    		     			if (missionCounter < 2) {
+	    		     				_this.loginAction()
+	    		     			}
+	    		     			// else: pass
+	    		     		},
+	    		     		// fail
+	    		     	 	function(response) {
+	    		     	 		clearInterval(missionTimer);
+	    		     	 		_this.popupStart("activate",{}, function(){
+				     	 			location.href = this.URL_SCHEME;
+				     	 		});
+				     	 		transition.abort();
+	    		 		});
+	    	     	}, option.interval);
+	    	     	break;
          	}
-         }
+     },
+     loginAction: function(){
+     	var _this = this;
+     	this.$root.getFromClient(
+     	    {a:1, b:"中文测试"},
+     	    {"sUrl":"http://test2.hongbaorili.com", 
+     	     "sPath":"loginaction", 
+     	     "sMethod":"POST", 
+     	     "cUrl":this.$root.CLIENT_LINK+"/rootaction",
+     	     "cMethod":"GET"}, 
+     	     function(x){
+     	     	_this.$broadcast("loginSuccess", true)
+     	     	console.log("成功");
+     	     }, 
+     	     function(x){
+     	     	console.log("失败")
+     	     }
+ 	    );
+     }
 	}
 }
 </script>

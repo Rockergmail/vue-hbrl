@@ -95,7 +95,7 @@ module.exports = {
     },
     route: {
         data: function(transition) {
-            this.$root.endLoading(this.$loadingRouteData)
+            this.$root.endLoading(this.$loadingRouteData);
         }
     },
     data: function () {
@@ -143,13 +143,19 @@ module.exports = {
                 ]
         }
     },
+    events: {
+        "loginSuccess": function(val) {
+            if (val) {
+                this.$http.get('/mock/home').then(function (response) {
+                    var getData = response.json(response.data)
+                    this.data = getData
+                }, function (response) {
+                    alert("Opsss");
+                });
+            }
+        }
+    },
     ready: function () {
-        this.$http.get('/mock/home').then(function (response) {
-            var getData = response.json(response.data)
-            this.data = getData
-        }, function (response) {
-            alert("Opsss");
-        });
         // 这里要用ready而不是route.data，是因为要先检测到它是否打开小助手来登陆
     }
 }

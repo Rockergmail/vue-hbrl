@@ -54,7 +54,7 @@
     <div v-if="pType == 'activate'">
       <img src="../1.png">
       <p style="color:#898989;margin:6px 0 20px">未检测到激活小助手，请打开助手</p>
-      <x-button @click="clickNo" text="打开小助手" style="padding:6px 0" type="primary" class="primary"></x-button>
+      <x-button @click="clickYes" text="打开小助手" style="padding:6px 0" type="primary" class="primary"></x-button>
     </div>
 
     <!-- 放弃任务 -->

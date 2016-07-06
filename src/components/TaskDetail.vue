@@ -91,36 +91,40 @@
     </flexbox>
 
     <!-- 任务提示 -->
-    <!-- 普通任务提示 -->
-    <div id="mission-tips" v-if="tasktype == 0">
-        <ul>
-            <li>{{data.adText}}</li>
-        </ul>
-    </div>
-
-    <!-- 限时任务提示 -->
-    <div id="mission-tips" v-if="tasktype == 1">
+    <!-- 备注：只有限时任务需要“领钱”来确认是否拿到钱 -->
+        <!-- 有关键词的任务提示 -->
+    <div id="mission-tips" v-if="data.keyWord">
         <ul>
             <li>1.点击“复制关键词”</li>
             <li>2.点击“马上开始任务”进入App Store<span class="red">粘贴搜索</span></li>
             <li>3.<span class="red">大概在第{{data.rank}}位</span>，下载安装</li>
-            <li>4.打开试用，前台运行，真实体验3分钟</li>
+            <li>4.{{data.taskSteps}}</li>
+            <li v-if="tasktype == 1">5.点击“领钱”</li>
+        </ul>
+    </div>
+        
+        <!-- 无关键词的任务提示 -->
+    <div id="mission-tips" v-else>
+            <!-- 普通任务提示&&显示任务提示 -->
+        <ul v-if="data.tasktype != 2">
+            <li>1.点击“开始任务”，跳转到AppStore下载页，点击“获取”安装应用</li>
+            <li>2.{{data.taskSteps}}</li>
+            <li v-if="data.tasktype == 1">3.点击“领钱”</li>
+        </ul>
+            <!-- 深度任务提示 -->
+        <ul v-else>
+            <li>1.自行打开应用：{{data.name}}</li>
+            <li>2.{{data.moreTasks.adText}}</li>
         </ul>
     </div>
 
-    <!-- 深度任务提示 -->
-    <div id="mission-tips" v-if="tasktype == 1">
-        <ul>
-            <li>{{data.moreTasks.adText}}</li>
-        </ul>
-    </div>
 
     <!-- 任务步骤 -->
     <div id="mission-btn">
 
       <template v-if="!data.keyWord">
         <flexbox :gutter="0" class="btn" @click="startMission">
-            <flexbox-item class="step-text">马上开始任务</flexbox-item>
+            <flexbox-item class="step-text">开始任务</flexbox-item>
         </flexbox>
       </template>  
 
@@ -132,10 +136,10 @@
 
         <flexbox :gutter="0" class="btn" @click="startMission">
             <flexbox-item :span="2/7" class="step-text">步骤 2</flexbox-item>
-            <flexbox-item :span="5/7">马上开始任务</flexbox-item>
+            <flexbox-item :span="5/7">开始任务</flexbox-item>
         </flexbox>
 
-        <flexbox :gutter="0" class="btn" @click="getMoney">
+        <flexbox v-if="tasktype == 1" :gutter="0" class="btn" @click="getMoney">
             <flexbox-item :span="2/7" class="step-text">步骤 3</flexbox-item>
             <flexbox-item :span="5/7">完成后点此领钱</flexbox-item>
         </flexbox>
@@ -250,7 +254,8 @@ module.exports = {
                 function (response) {
                     var getData = response.json(response.data)
                     if (getData.c === 0) {
-                       this.$router.go({path: '/taskList'}) 
+                       // this.$router.go({path: '/taskList'}) 
+                       window.history.go(-1);
                     } else {
                         this.$root.toastStart("c!=0 放弃失败")
                     }

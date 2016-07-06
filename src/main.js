@@ -1,8 +1,8 @@
 var Vue = require("vue"),
 	VueRouter = require("vue-router"),
 	VueResource = require("vue-resource"),
-	Mock = require("mockjs"),
-	md5 = require("md5");
+	Mock = require("mockjs");
+	// md5 = require("md5");
 
 import app from "./components/App"
 import Home from './components/Home'
@@ -95,6 +95,8 @@ var router = new VueRouter();
 		// }
 		router.app.endLoading(true);
 		router.app.resetLoading();
+
+		router.app.heartbeatCheck(transition)
 	    transition.next();
 	})
 
