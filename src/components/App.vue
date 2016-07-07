@@ -168,7 +168,7 @@ module.exports = {
 			HTTP: 'http://',
 			URL_SCHEME: 'zs20160606://',
 			// CLIENT_IP: "127.0.0.1",
-			CLIENT_IP: "172.16.8.243",
+			CLIENT_IP: "172.16.8.91",
 			// CLIENT_IP: "172.16.8.224",
 			// CLIENT_IP: "192.168.1.138",
 		    CLIENT_PORT: "40000",

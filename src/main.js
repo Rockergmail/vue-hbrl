@@ -150,9 +150,9 @@ import Home from './components/Home'
 	// 	// }
 	// })
 
-	// Mock.setup({
-	// 	timeout: 3000
-	// })
+	Mock.setup({
+		timeout: 3000
+	})
 
 	// home
 	Mock.mock('/mock/home', {
