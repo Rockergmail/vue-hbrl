@@ -226,7 +226,22 @@ module.exports = {
                     window.location.href = this.data.downloadUrl;
                 }
             } else {
-                this.$root.toastStart("任务开始，请自行打开该应用");
+                this.$http.get(
+                this.$root.CLIENT_URL.snatchTask,
+                {
+                    params:{
+                        adid: id,
+                    }
+                }).then(
+                function (response) {
+                    var getData = response.json(response.data);
+                    if (getData.c === 0) {
+                       // pass
+                    }
+                },
+                function (response) {
+                    this.$root.toastStart("error: 宝宝不开心");
+                });
             }
         },
         getMoney: function() {

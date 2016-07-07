@@ -162,9 +162,15 @@ module.exports = {
             }
         },
         goPlay (id) {
+        /*　普通任务：点击即开始
+           限时任务：点击即开始，需要显示抢过程，以及结果
+           深度任务：点击不代表开始，需要再taskDetail点击开始才算 
+        　*/
             if (this.tasktype == 1) {
                 this.$root.toastStart("抢任务中...");
             }
+
+            if (this.tasktype != 2 ) {
             this.$http.get(
                 this.$root.CLIENT_URL.snatchTask,
                 {
@@ -190,6 +196,15 @@ module.exports = {
                 function (response) {
                     this.$root.toastStart("error: 宝宝不开心");
                 });
+            } else {
+                this.$router.go(
+                 { 
+                     name: 'detail',
+                     params: {
+                         adid: id
+                     }
+                 })
+            }
             
         },
         getTaskList: function(transition) {

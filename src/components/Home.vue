@@ -38,10 +38,10 @@
     <div id="main">
     	<section id="section-board">
             <p id="text-income">
-                <p id="text-invite">邀请码： {{ data['inviteCode'] }}</p>
+                <p id="text-invite">邀请码： {{ userData['inviteCode'] }}</p>
 
                 <p id="text-total">累计收益（元）</p>
-                <countup v-if="data.total" id="data-total" :end-val="data.total" :decimals="2"></countup>
+                <countup v-if="userData.total" id="data-total" :end-val="userData.total" :decimals="2"></countup>
 
                 <p id="data-total" v-else></p>
             </p>
@@ -49,8 +49,8 @@
             <section id="section-withdraw">
                 <a id="btn-withdraw" v-link="{path: '/withdraw'}">立即提现</a>
                 
-                <p class="text-money">当前余额： {{ data['balance'] }}</p>
-                <p class="text-money">今日收入： {{ data['todayIncome'] }}</p>
+                <p class="text-money">当前余额： {{ userData['balance'] }}</p>
+                <p class="text-money">今日收入： {{ userData['todayIncome'] }}</p>
             </section>
     	</section>
 
@@ -100,7 +100,7 @@ module.exports = {
     },
     data: function () {
         return {
-            data: {},
+            userData: {},
             menus: [{
                     path: "/taskList/1",
                     pic: "http://cdn.hongbaorili.com/wind/static/images/icon/pro.png",
@@ -146,12 +146,12 @@ module.exports = {
     events: {
         "loginSuccess": function(val) {
             if (val) {
-                this.$root.getData(this.data, this.$root.CLIENT_URL.home);
+                this.$root.getData(this, this.$root.CLIENT_URL.home);
             }
         }
     },
     ready: function () {
-        // 这里要用ready而不是route.data，是因为要先检测到它是否打开小助手来登陆
+        // 这里要用ready而不是route.userData，是因为要先检测到它是否打开小助手来登陆
     }
 }
 </script>

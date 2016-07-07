@@ -146,8 +146,8 @@ module.exports = {
 			// 客户端地址封装
 			HTTP: 'http://',
 			URL_SCHEME: 'zs20160606://',
-			CLIENT_IP: "127.0.0.1",
-			// CLIENT_IP: "172.16.8.243",
+			// CLIENT_IP: "127.0.0.1",
+			CLIENT_IP: "172.16.8.243",
 			// CLIENT_IP: "172.16.8.224",
 			// CLIENT_IP: "192.168.1.138",
 		    CLIENT_PORT: "40000",
@@ -284,7 +284,9 @@ module.exports = {
     	getFromClient(params, options, successCb, failCb) {
 
     		 // 由于ajax自动会将参数encode，所以进行md5之前要encode
-        	var stringifyParams = JSON.stringify(params),
+        	var successCb = successCb || function(){},
+    			failCb = failCb || function(){},
+        		stringifyParams = JSON.stringify(params),
                 encodedParams = encodeURIComponent(stringifyParams),
                 encodedUrlhost = encodeURIComponent(options.sUrl),
                 encodedUrlpath = encodeURIComponent(options.sPath),
@@ -394,11 +396,14 @@ module.exports = {
      },
 
      // 过去数据
-     getData: function(childData, url, successCb, failCb){
+     getData: function(child, url, successCb, failCb){
+     		var successCb = successCb || function(){},
+    			failCb = failCb || function(){};
+
             this.startLoading();
             this.$http.get(url).then(function (response){
                 var jsonData = response.json(response.data);
-                childData = jsonData;
+                child.userData = jsonData;
                 this.endLoading(true);
                 successCb();
             }, function (response) {
