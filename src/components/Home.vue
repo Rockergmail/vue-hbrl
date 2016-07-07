@@ -32,7 +32,7 @@
 
     <x-header
         :left-options="{showBack:false, preventGoBack: true}"
-        :right-options="{showMore:false,showRefresh:true,refreshLink: '/mock/home'}"
+        :right-options="{showMore:false,showRefresh:true}"
     >红包日历</x-header>
 
     <div id="main">
@@ -146,13 +146,21 @@ module.exports = {
     events: {
         "loginSuccess": function(val) {
             if (val) {
-                this.$http.get('/mock/home').then(function (response) {
-                    var getData = response.json(response.data)
-                    this.data = getData
-                }, function (response) {
-                    alert("Opsss");
-                });
+                this.getData()
             }
+        }
+    },
+    methods: {
+        getData: function(val){
+            console.log("from get data");
+            this.$root.startLoading();
+            this.$http.get('/mock/home').then(function (response) {
+                var jsonData = response.json(response.data)
+                this.data = jsonData
+                this.$root.endLoading(true);
+            }, function (response) {
+                alert("Opsss");
+            });
         }
     },
     ready: function () {

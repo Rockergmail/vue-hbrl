@@ -94,7 +94,6 @@ var router = new VueRouter();
 		// 	transition.abort()
 		// }
 		router.app.endLoading(true);
-		router.app.resetLoading();
 
 		router.app.heartbeatCheck(transition)
 	    transition.next();
@@ -139,9 +138,9 @@ var router = new VueRouter();
 	// 	// }
 	// })
 
-	// Mock.setup({
-	// 	timeout: 3000
-	// })
+	Mock.setup({
+		timeout: 3000
+	})
 
 	// home
 	Mock.mock('/mock/home', {

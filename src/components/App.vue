@@ -146,9 +146,9 @@ module.exports = {
 			// 客户端地址封装
 			HTTP: 'http://',
 			URL_SCHEME: 'zs20160606://',
-			// CLIENT_IP: "127.0.0.1",
+			CLIENT_IP: "127.0.0.1",
 			// CLIENT_IP: "172.16.8.243",
-			CLIENT_IP: "172.16.8.224",
+			// CLIENT_IP: "172.16.8.224",
 			// CLIENT_IP: "192.168.1.138",
 		    CLIENT_PORT: "40000",
 
@@ -188,8 +188,10 @@ module.exports = {
 				this.effect2 = true;
 				console.log("endLoading")
 			}
+
 		},
 		startLoading: function() {
+			this.resetLoading()
 			var _this = this;
 			this.effect1 = true;
 			this.loadingTimer = setTimeout(function(){
@@ -373,7 +375,7 @@ module.exports = {
      loginAction: function(){
      	var _this = this;
      	this.$root.getFromClient(
-     	    {a:1, b:"中文测试"},
+     	    {a:1, b:"中文测试", uic:48855431},
      	    {"sUrl":"http://test2.hongbaorili.com", 
      	     "sPath":"loginaction", 
      	     "sMethod":"POST", 
@@ -384,6 +386,7 @@ module.exports = {
      	     	_this.$broadcast("loginSuccess", true);
      	     }, 
      	     function(response){
+     	     	alert("fail")
      	     	this.$root.toastStart("error 登录失败");
      	     }
  	    );
