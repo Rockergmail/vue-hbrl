@@ -180,7 +180,7 @@ module.exports = {
                     var getData = response.json(response.data);
                     if (getData.c === 0) {
                         this.data = getData.d;
-                        this.$root.endLoading(this.$loadingRouteData);
+                        this.$root.endLoading();
                     } else {
                         this.$root.toastStart("反正我获取不到！哼╭(╯^╰)╮");
                         this.$root.giveUpTransition(transition)

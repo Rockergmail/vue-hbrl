@@ -222,7 +222,7 @@ module.exports = {
                 }).then(
                 function (response) {
                     var getData = response.json(response.data)
-                    this.$root.endLoading(this.$loadingRouteData)
+                    this.$root.endLoading()
                     // 返回数据状态正常
                     if (getData.c === 0) {
                         // 有任务数据返回
@@ -246,13 +246,13 @@ module.exports = {
                     // 返回数据状态不正常
                     } else {
                         this.$root.toastStart("c!=0:一大波用户在涌入，请稍后再试！");
-                        // this.$root.giveUpTransition(transition)
+                        this.$root.giveUpTransition(transition)
                     }
                     this.flag = true;
                     this.$broadcast('pullup:reset', this.$refs.scroller.uuid);
                 },
                 function (response) {
-                    // this.$root.giveUpTransition(transition)
+                    this.$root.giveUpTransition(transition)
                     if (response.statusText="request timeout") {
                         this.$root.toastStart("timeout:一大波用户在涌入，请稍后再试！");
                     } else {

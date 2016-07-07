@@ -36,6 +36,14 @@
     	opacity: 0;
     	width:100%;
     }
+    .weui_loading_toast{
+    	opacity: 0;
+    }
+    .weui_loading_toast.effect3{
+    	-webkit-animation: animation3 2s ease-in-out;
+    	animation: animation3 2s ease-in-out;
+    	opacity: 1;
+    }
 
 	@-webkit-keyframes animation1{
 		0%{opacity: 1; width: 0;}
@@ -55,6 +63,18 @@
 	@keyframes animation2{
 		0%{opacity: 1; width: 30%;}
 		100%{opacity: 0; width: 100%;}
+	}
+
+	@-webkit-keyframes animation3{
+		0%{opacity: 0}
+		99%{opacity: 0}
+		100%{opacity: 1}
+	}
+
+	@keyframes animation3{
+		0%{opacity: 0}
+		99%{opacity: 0}
+		100%{opacity: 1}
 	}
 
     /*reset toast*/
@@ -93,9 +113,9 @@
 <template>
 
 <div id="wrapper">
-	<loading :show="showLoading"></loading>
+	<!-- <loading :show="showLoading"></loading> -->
+	<loading :show="true" :effect3.sync="effect3"></loading>
 	<x-popup :p-type.sync="pType" :custom-click-yes.sync="pClickYes" :p-value.sync="pValue"></x-popup>
-	<!-- <x-popup :p-type.sync="pType" :custom-click-yes.sync="pClickYes"></x-popup> -->
 	<progress :effect1.sync="effect1" :effect2.sync="effect2"></progress>
 	<x-toast :t-string.sync="toastString" :t-time="toastTime" :t-type.sync="toastType" :t-width="toastWidth"></x-toast>
 	<router-view></router-view>
@@ -130,6 +150,7 @@ module.exports = {
 			loadingTimer: null,
 			effect1: false,
 			effect2: false,
+			effect3: false,
 			showLoading: false,
 
 			// x-toast相关
@@ -187,29 +208,29 @@ module.exports = {
 	},
 	methods: {
 		// loading & progress组件相关
-		endLoading: function(status){
-			if (status) {
-				clearTimeout(this.loadingTimer);
-				this.showLoading = false;
+		endLoading: function(){
+				// clearTimeout(this.loadingTimer);
+				// this.showLoading = false;
+				this.effect3 = false;
 				this.effect2 = true;
 				console.log("endLoading")
-			}
-
 		},
 		startLoading: function() {
 			this.resetLoading()
 			var _this = this;
 			this.effect1 = true;
-			this.loadingTimer = setTimeout(function(){
-				_this.showLoading = true;
-			}, 2000)
+			// this.loadingTimer = setTimeout(function(){
+				// _this.showLoading = true;
+			// }, 2000)
+			this.effect3 = true;
 			console.log("startLoading")
 		},
 		resetLoading: function() {
 			
-			// reset progress
+			// reset progress & loading
 			this.effect1 = false;
 			this.effect2 = false;   
+			this.effect3 = false;
 
 			// reset x-popup
 			if (this.pType !== "getMoneySuccess") {
@@ -237,7 +258,7 @@ module.exports = {
 		// transition stuff
 		giveUpTransition: function(transition){
 			transition.abort();
-			this.endLoading(true);
+			this.endLoading();
 		},
 
 		// 路由相关
@@ -398,23 +419,7 @@ module.exports = {
      	     	this.$root.toastStart("error 登录失败");
      	     }
  	    );
-     },
-
-     // 过去数据
-     getData: function(child, url, option, successCb, failCb){
-     		// var successCb = successCb || function(){},
-    			// failCb = failCb || function(){};
-
-       //      this.$http.get(url).then(function (response){
-       //          var jsonData = response.json(response.data);
-
-       //          if (get)
-       //          child.userData = jsonData;
-       //          successCb(jsonData);
-       //      }, function (response) {
-       //          failCb(jsonData);
-       //      });
-        }
+     }
 	}
 }
 </script>

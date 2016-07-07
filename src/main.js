@@ -99,7 +99,7 @@ import Home from './components/Home'
 		// 	router.app.popupStart("giveup",function(){alert("u son of bitch")})
 		// 	transition.abort()
 		// }
-		router.app.endLoading(true);
+		router.app.endLoading();
 		router.app.heartbeatCheck(transition)
 	    transition.next();
 	})
@@ -118,7 +118,7 @@ import Home from './components/Home'
 	Vue.http.interceptors.push(function(request, next){
 		var timeout; 
 
-		router.app.endLoading(true);
+		router.app.endLoading();
 		router.app.startLoading();
 
 		if (request._timeout) {
@@ -133,7 +133,7 @@ import Home from './components/Home'
 		next(function(response){
 			clearTimeout(timeout);
 			response.data = response.json(response.data);
-			router.app.endLoading(true);
+			router.app.endLoading();
 		})
 	});
 
