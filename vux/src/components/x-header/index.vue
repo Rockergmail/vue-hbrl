@@ -2,19 +2,15 @@
   <div class="x-header">
     <div class="x-header-left">
       <!-- back -->
-      <!-- <a class="x-header-back" @click.preventDefault v-show="leftOptions.showBack" @click="onClickBack">{{leftOptions.backText}}</a> -->
-      <a class="x-header-back" v-show="leftOptions.showBack" @click="onClickBack">{{leftOptions.backText}}</a>
+      <a class="x-header-back" @click.preventDefault v-show="leftOptions.showBack" @click="onClickBack">{{leftOptions.backText}}</a>
 
-      <!-- userinfo -->
-      <!-- <a class="x-header-userinfo" @click.preventDefault v-show="leftOptions.showUserinfo" v-link="{path: '/userinfo'}">UserInfo</a>
- -->
       <slot name="left"></slot>
     </div>
     <h1 class="x-header-title"><slot></slot></h1>
     <div class="x-header-right">
 
       <!-- more -->
-      <a class="x-header-more" @click.preventDefault @click="$emit('on-click-more')" v-if="rightOptions.showMore"></a>
+      <!-- <a class="x-header-more" @click.preventDefault @click="$emit('on-click-more')" v-if="rightOptions.showMore"></a> -->
 
       <!-- refresh -->
       <a class="x-header-refresh" @click.preventDefault v-show="rightOptions.showRefresh" @click="onClickRefresh">refresh</a>
@@ -47,36 +43,19 @@ export default {
           refreshLink: ""
         }
       }
-    },
-    myClickBack: {
-      type: Function,
-      twoWay: true
     }
   },
   methods: {
     onClickBack () {
       if (this.leftOptions.preventGoBack) {
-        this.myClickBack();
-        console.log("you clicked back")
-        // this.$emit('on-click-back')
+        this.$emit('my-click-back')
       } else {
         history.back()
       }
     },
 
     onClickRefresh () {
-      var parent = this.$parent;
-      var rootComponent = this.$root;
-      rootComponent.startLoading()
-      parent.$http.post(this.rightOptions.refreshLink).then(function (response) {
-          rootComponent.endLoading(true)
-          parent.data = response.data;
-      }, function (response) {
-          alert("Opsss");
-      });
-    },
-
-    clickBack () {
+      this.$parent.getData();
     }
   }
 }
