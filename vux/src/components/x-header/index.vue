@@ -55,7 +55,7 @@ export default {
     },
 
     onClickRefresh () {
-      this.$parent.getData();
+      this.$parent.getUserData();
     }
   }
 }
