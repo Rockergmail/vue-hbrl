@@ -35,7 +35,7 @@
 <sticky id="fuckme">
     <x-header
         :left-options="{showBack:true}"
-        :right-options="{showMore:true}"
+        :right-options="{showMore:false,showRefresh:true}"
     >限时任务</x-header>
 </sticky>
 
@@ -131,7 +131,7 @@ module.exports = {
     },
     route: {
         data: function(transition) {
-            return this.getTaskList(transition)
+            return this.getUserData(transition)
         },
         waitForData: true
     },
@@ -158,7 +158,7 @@ module.exports = {
             // 请求完毕，可以继续请求
             } else {
                 this.flag = false
-                this.getTaskList(uuid)
+                this.getUserData(uuid)
             }
         },
         goPlay (id) {
@@ -207,7 +207,7 @@ module.exports = {
             }
             
         },
-        getTaskList: function(transition) {
+        getUserData: function(transition) {
             return this.$http.get(
                 this.$root.CLIENT_URL.taskList,
                 {

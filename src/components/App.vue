@@ -166,7 +166,7 @@ module.exports = {
 		CLIENT_URL: function(){
 			return {
 				//　获取限时任务列表
-				"home": "/mock/home",
+				
 				"taskList": this.CLIENT_LINK + "/GetSourceData",
 				"taskDetail": this.CLIENT_LINK + "/TaskDetail",
 				"snatchTask": this.CLIENT_LINK + "/SnatchTask",
@@ -177,6 +177,11 @@ module.exports = {
 				"copy": this.CLIENT_LINK + "/CopyKeyWord",
 				"login": this.URL_SCHEME + "rootaction?page=login"
 
+			}
+		},
+		SERVER_URL: function(){
+			return {
+				"home": "/mock/home"
 			}
 		}
 	},
@@ -204,7 +209,7 @@ module.exports = {
 			
 			// reset progress
 			this.effect1 = false;
-			this.effect2 = false;
+			this.effect2 = false;   
 
 			// reset x-popup
 			if (this.pType !== "getMoneySuccess") {
@@ -396,19 +401,19 @@ module.exports = {
      },
 
      // 过去数据
-     getData: function(child, url, successCb, failCb){
-     		var successCb = successCb || function(){},
-    			failCb = failCb || function(){};
+     getData: function(child, url, option, successCb, failCb){
+     		// var successCb = successCb || function(){},
+    			// failCb = failCb || function(){};
 
-            this.startLoading();
-            this.$http.get(url).then(function (response){
-                var jsonData = response.json(response.data);
-                child.userData = jsonData;
-                this.endLoading(true);
-                successCb();
-            }, function (response) {
-                failCb();
-            });
+       //      this.$http.get(url).then(function (response){
+       //          var jsonData = response.json(response.data);
+
+       //          if (get)
+       //          child.userData = jsonData;
+       //          successCb(jsonData);
+       //      }, function (response) {
+       //          failCb(jsonData);
+       //      });
         }
 	}
 }

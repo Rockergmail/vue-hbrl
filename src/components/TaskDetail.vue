@@ -59,7 +59,7 @@
 <sticky>
     <x-header
         :left-options="{showBack:true, preventGoBack: true}"
-        :right-options="{showMore:true}"
+        :right-options="{showMore:false,showRefresh:true}"
         @my-click-back="clickBack"
     >任务详情</x-header>
 </sticky>
@@ -247,7 +247,25 @@ module.exports = {
         getMoney: function() {
             // 向后台查询
             // 失败
-            this.$root.popupStart("getMoneyFail");
+            this.$http.get(
+                this.$root.CLIENT_URL.reviewTask,
+                {
+                    params:{
+                        adid: this.$route.params.adid
+                    }
+                }
+            ).then(function(response){
+                if (response.data.c == 0) {
+                    alert("ok，去后台拿数据")
+                } else {
+                    alert("c!=0 失败")
+                    this.$root.popupStart("getMoneyFail");
+                }
+            },function(response){
+                alert("Opsss");
+            })
+
+            
 
             // 成功
             // this.$root.popupStart("getMoneySuccess", {

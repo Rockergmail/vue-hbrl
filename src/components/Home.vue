@@ -152,7 +152,14 @@ module.exports = {
     },
     methods: {
         getUserData: function(){
-            this.$root.getData(this, this.$root.CLIENT_URL.home);
+
+            this.$http.get(this.$root.SERVER_URL.home).then(
+                function (response) {
+                    this.userData = response.data;
+                },
+                function (response) {
+                    alert("oPSSS");
+                });
         }
     },
     ready: function () {

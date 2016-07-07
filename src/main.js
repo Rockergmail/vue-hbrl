@@ -15,7 +15,13 @@ import Home from './components/Home'
 	Vue.use(VueResource);
 
 
-var router = new VueRouter();
+	var router = new VueRouter();
+
+	// router全局配置
+	// Vue.http.options.before = function(){
+	// 	router.app.startLoading();
+	// }
+
 
 	// 注册组件
 	// Vue.component("x-header", xHeader);
@@ -94,7 +100,6 @@ var router = new VueRouter();
 		// 	transition.abort()
 		// }
 		router.app.endLoading(true);
-
 		router.app.heartbeatCheck(transition)
 	    transition.next();
 	})
@@ -107,9 +112,14 @@ var router = new VueRouter();
 	// 启动路由
 	router.start(app, "#app");
 
-	// vue-resource 个性化
+	// vue-resource 个性化：
+	// 1.　新增_tiemout选项，返回request timeout方便写回调
+	// 2. 每次调用http，前会调用startLoading，后会调用endLoading
 	Vue.http.interceptors.push(function(request, next){
 		var timeout; 
+
+		router.app.endLoading(true);
+		router.app.startLoading();
 
 		if (request._timeout) {
 			timeout = setTimeout(function(){
@@ -122,6 +132,8 @@ var router = new VueRouter();
 
 		next(function(response){
 			clearTimeout(timeout);
+			response.data = response.json(response.data);
+			router.app.endLoading(true);
 		})
 	});
 
