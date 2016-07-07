@@ -1,5 +1,5 @@
 <template>
-  <div id="loadingToast" class="weui_loading_toast" v-show="show">
+  <div id="loadingToast" class="weui_loading_toast" v-show="show" :class="{'effect3': effect3}">
     <div class="weui_mask" :style="{top: topValue}"></div>
     <div class="weui_toast">
       <div class="weui_loading">
@@ -23,6 +23,11 @@ export default {
     text: {
       type: String,
       default: 'Loading'
+    },
+    effect3: {
+      type: Boolean,
+      default: false,
+      twoWay: true
     }
   }
 }
