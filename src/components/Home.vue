@@ -146,8 +146,13 @@ module.exports = {
     events: {
         "loginSuccess": function(val) {
             if (val) {
-                this.$root.getData(this, this.$root.CLIENT_URL.home);
+                this.getUserData();
             }
+        }
+    },
+    methods: {
+        getUserData: function(){
+            this.$root.getData(this, this.$root.CLIENT_URL.home);
         }
     },
     ready: function () {
