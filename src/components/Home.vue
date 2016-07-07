@@ -146,21 +146,8 @@ module.exports = {
     events: {
         "loginSuccess": function(val) {
             if (val) {
-                this.getData()
+                this.$root.getData(this.data, this.$root.CLIENT_URL.home);
             }
-        }
-    },
-    methods: {
-        getData: function(val){
-            console.log("from get data");
-            this.$root.startLoading();
-            this.$http.get('/mock/home').then(function (response) {
-                var jsonData = response.json(response.data)
-                this.data = jsonData
-                this.$root.endLoading(true);
-            }, function (response) {
-                alert("Opsss");
-            });
         }
     },
     ready: function () {

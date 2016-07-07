@@ -166,6 +166,7 @@ module.exports = {
 		CLIENT_URL: function(){
 			return {
 				//　获取限时任务列表
+				"home": "/mock/home",
 				"taskList": this.CLIENT_LINK + "/GetSourceData",
 				"taskDetail": this.CLIENT_LINK + "/TaskDetail",
 				"snatchTask": this.CLIENT_LINK + "/SnatchTask",
@@ -390,7 +391,20 @@ module.exports = {
      	     	this.$root.toastStart("error 登录失败");
      	     }
  	    );
-     }
+     },
+
+     // 过去数据
+     getData: function(childData, url, successCb, failCb){
+            this.startLoading();
+            this.$http.get(url).then(function (response){
+                var jsonData = response.json(response.data);
+                childData = jsonData;
+                this.endLoading(true);
+                successCb();
+            }, function (response) {
+                failCb();
+            });
+        }
 	}
 }
 </script>
