@@ -78,9 +78,28 @@
 	}
 
     /*reset toast*/
+    	/*第一层*/
+	    	/*popup*/
+	.weui_xpopup{z-index: 9999;}
+	    	/*toast*/
+	.weui_toast{z-index: 9990;}
+	    	/*loading*/
+	.weui_loading_toast .weui_toast{z-index:9980;}
+			/*progress - FIXME*/
+    		/*第二层*/
+    			/*sticky - x-header*/
+    .vux-sticky, .vux-fixed{z-index:5999;}
+    			/*scroller - FIXME*/
+    			/*flexbox*/
+	.vux-flexbox{z-index:2999;}
+
+
     #ximi_toast .weui_toast{
     	top:86%;
     }
+
+    /*reset z-index*/
+
 
     /*Media Query*/
 
@@ -142,9 +161,9 @@ module.exports = {
 			// 登录信息
 			token: "",
 
-			// 路由相关
-			// routeHistory:[],
-			// currentRoute: 0,
+			// 首页
+			firstPage: true,
+			firstRender: false,
 
 			// loading & progress组件相关
 			loadingTimer: null,
@@ -196,7 +215,8 @@ module.exports = {
 				// 小助手心跳检查
 				"ping": this.CLIENT_LINK + "/ping",
 				"copy": this.CLIENT_LINK + "/CopyKeyWord",
-				"login": this.URL_SCHEME + "rootaction?page=login"
+				// "login": this.URL_SCHEME + "rootaction?page=login"
+				"login": this.CLIENT_LINK + "/rootaction"
 
 			}
 		},
@@ -206,6 +226,14 @@ module.exports = {
 			}
 		}
 	},
+	// watch: {
+	// 	"token": function (val) {
+	// 		// window.Vue.http.headers.custom.Cookie = "token=" + this.token;
+	// 		window.Vue.http.options.headers = {
+	// 			"MCookie": "token=" + this.token
+	// 		};
+	// 	}
+	// },
 	methods: {
 		// loading & progress组件相关
 		endLoading: function(){
@@ -216,8 +244,6 @@ module.exports = {
 				console.log("endLoading")
 		},
 		startLoading: function() {
-			this.resetLoading()
-			var _this = this;
 			this.effect1 = true;
 			// this.loadingTimer = setTimeout(function(){
 				// _this.showLoading = true;
@@ -411,7 +437,8 @@ module.exports = {
      	     "cUrl":this.$root.CLIENT_LINK + "/rootaction",
      	     "cMethod":"GET"}, 
      	     function(response){
-     	     	_this.token = response.token; 
+     	     	_this.token = response.data.d.token; 
+     	     	console.log(_this.token)
      	     	_this.$broadcast("loginSuccess", true);
      	     }, 
      	     function(response){

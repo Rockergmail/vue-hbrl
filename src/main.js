@@ -7,7 +7,7 @@ var Vue = require("vue"),
 import app from "./components/App"
 import Home from './components/Home'
 
-
+	window.Vue = Vue;
 	// Debug mode
 	Vue.config.debug = true;
 	// 使用vue-router && vue-resource
@@ -17,15 +17,8 @@ import Home from './components/Home'
 
 	var router = new VueRouter();
 
-	// router全局配置
-	// Vue.http.options.before = function(){
-	// 	router.app.startLoading();
-	// }
-
-
-	// 注册组件
-	// Vue.component("x-header", xHeader);
-
+	// vue-resource全局配置
+	// Vue.http.options.credentials = true;
 
 	// 路由表
 	router.map({
@@ -84,7 +77,7 @@ import Home from './components/Home'
 				require(['./components/InviteList.vue'], resolve);
 			}
 		},
-		// 收入明细
+		// 收入明细W
 		'/income': {
 			component: function(resolve){
 				require(['./components/Income.vue'], resolve);
@@ -106,7 +99,13 @@ import Home from './components/Home'
 
 	// 路由勾子activate之前
 	router.afterEach(function(transition){
-		router.app.startLoading();
+		router.app.resetLoading();
+
+		if (transition.from.path) {
+			router.app.startLoading();
+		} else {
+			router.app.firstPage = false;
+		}
 	})
 
 	// 启动路由
@@ -119,7 +118,25 @@ import Home from './components/Home'
 		var timeout; 
 
 		router.app.endLoading();
-		router.app.startLoading();
+		router.app.resetLoading();
+
+		// 不显示loading的：
+		// 1. 首页transition
+		// 2. ping
+		// 3. 第二次以上login不需要，而且不需要同步
+
+		// 显示loading的：
+		// 1.　第一次login
+		// 2.　非首页transition
+		// 3.　else ajax
+
+
+		console.log(request.url + " " + router.app.CLIENT_URL.login + " " + router.app.CLIENT_URL.ping)
+		if (!router.app.firstPage && ((request.url != router.app.CLIENT_URL.login) || (request.url != router.app.CLIENT_URL.ping))) {
+			router.app.startLoading();
+		} else {
+			console.log("no loading")
+		}
 
 		if (request._timeout) {
 			timeout = setTimeout(function(){
@@ -150,9 +167,9 @@ import Home from './components/Home'
 	// 	// }
 	// })
 
-	Mock.setup({
-		timeout: 3000
-	})
+	// Mock.setup({
+	// 	timeout: 3000
+	// })
 
 	// home
 	Mock.mock('/mock/home', {

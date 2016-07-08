@@ -153,12 +153,7 @@ module.exports = {
     methods: {
         getUserData: function(){
 
-            this.$http.get(
-                this.$root.SERVER_URL.home,
-                {
-                    _timeout: 2000
-                }
-                ).then(
+            this.$http.get(this.$root.SERVER_URL.home).then(
                 function (response) {
                     this.userData = response.data;
                 },
