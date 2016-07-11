@@ -41,7 +41,8 @@ module.exports = {
             // { test: /\.(png|jpg|gif)$/, loader: 'url-loader?limit=8192'},
         //html模板编译？
             { test: /\.(html|tpl)$/, loader: 'html-loader' },
-            { test: /vux.src.*?js$/, loader: 'babel'}
+            { test: /vux.src.*?js$/, loader: 'babel'},
+            { test: /common.*?js$/, loader: 'babel'}
         ]
     },
     // .vue的配置。需要单独出来配置，其实没什么必要--因为我删了也没保错，不过这里就留这把，因为官网文档里是可以有单独的配置的。

@@ -30,11 +30,6 @@
 </style>
 <div id="home">
 
-    <x-header
-        :left-options="{showBack:false, preventGoBack: true}"
-        :right-options="{showMore:false,showRefresh:true}"
-    >红包日历</x-header>
-
     <div id="main">
     	<section id="section-board">
             <p id="text-income">
@@ -80,7 +75,7 @@
 </template>
 
 <script>
-import xHeader from "vux/src/components/x-header/index.vue"
+
 import flexbox from "vux/src/components/flexbox/index.vue"
 import flexboxItem from "vux/src/components/flexbox-item/index.vue"
 import countup from "vux/src/components/countup/index.vue"
@@ -88,14 +83,13 @@ import countup from "vux/src/components/countup/index.vue"
 module.exports = {
     name: "home",
     components: {
-        "x-header": xHeader,
         "flexbox": flexbox,
         "flexbox-item": flexboxItem,
         "countup": countup
     },
     route: {
         data: function(transition) {
-            this.$root.endLoading(this.$loadingRouteData);
+            this.$root.endLoading();
         }
     },
     data: function () {

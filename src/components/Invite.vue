@@ -29,10 +29,6 @@
 <template>
 
 <div id="invite">
-	<x-header
-        :left-options="{showBack:false, preventGoBack: true}"
-        :right-options="{showMore:false,showRefresh:true,refreshLink: '/mock/invite'}"
-    >邀请奖励</x-header>
 
 	<div id="board-info">
 	    <flexbox :gutter="0" class="board board-total">
@@ -77,7 +73,6 @@
 </template>
 
 <script>
-import xHeader from "vux/src/components/x-header/index.vue"
 import flexbox from "vux/src/components/flexbox/index.vue"
 import flexboxItem from "vux/src/components/flexbox-item/index.vue"
 import Cell from 'vux/src/components/cell'
@@ -89,7 +84,6 @@ module.exports = {
 		"flexbox": flexbox,
 		"flexbox-item": flexboxItem,
 		"cell": Cell,
-		"x-header": xHeader,
 		"group": Group
 	},
 	data:function(){

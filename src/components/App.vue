@@ -135,6 +135,10 @@
 	<!-- <loading :show="showLoading"></loading> -->
 	<loading :show="true" :effect3.sync="effect3"></loading>
 	<x-popup :p-type.sync="pType" :custom-click-yes.sync="pClickYes" :p-value.sync="pValue"></x-popup>
+	<x-header
+        :left-options="{showBack: headerOption.showBack, preventGoBack: headerOption.preventGoBack}"
+        :right-options="{showMore:false,showRefresh:true}"
+    >{{title}}</x-header>
 	<progress :effect1.sync="effect1" :effect2.sync="effect2"></progress>
 	<x-toast :t-string.sync="toastString" :t-time="toastTime" :t-type.sync="toastType" :t-width="toastWidth"></x-toast>
 	<router-view></router-view>
@@ -143,6 +147,7 @@
 </template>
 
 <script>
+import xHeader from "vux/src/components/x-header"
 import progress from "vux/src/components/progress"
 import loading from "vux/src/components/loading"
 import xPopup from "./common/xPopup"
@@ -151,6 +156,7 @@ import md5 from "md5"
 
 module.exports = {
 	components: {
+		"x-header": xHeader,
 		"progress": progress,
 		"loading": loading,
 		"x-popup": xPopup,
@@ -163,7 +169,6 @@ module.exports = {
 
 			// 首页
 			firstPage: true,
-			firstRender: false,
 
 			// loading & progress组件相关
 			loadingTimer: null,
@@ -223,6 +228,16 @@ module.exports = {
 		SERVER_URL: function(){
 			return {
 				"home": "/mock/home"
+			}
+		},
+		title: function(){
+			var title = this.$route.title,
+				params = this.$route.params;
+			if (params.tasktype > -1) {
+				// FIXME: when ｄｅｔａｉｌ　ｓｕｃｋｓ
+				return title[params.tasktype] 
+			} else {
+				return title
 			}
 		}
 	},
@@ -287,16 +302,7 @@ module.exports = {
 			this.endLoading();
 		},
 
-		// 路由相关
-		// afterLoaded: function() {
-		// 	this.routeHistory[this.currentRoute++] = this.$route.path;
-		// },
-		// onClickBack: function() {
-		// 	this.$router.go(this.routeHistory[this.currentRoute--]);
-		// },
-
 		// x-header相关
-
 
 		// 小助手相关
 		/**

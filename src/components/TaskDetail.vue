@@ -56,13 +56,6 @@
 </style>
     
 <div id="taskDetail">
-<sticky>
-    <x-header
-        :left-options="{showBack:true, preventGoBack: true}"
-        :right-options="{showMore:false,showRefresh:true}"
-        @my-click-back="clickBack"
-    >任务详情</x-header>
-</sticky>
 
 <section id="list">
     <!-- 任务信息 -->
@@ -153,43 +146,69 @@
 </template>
 
 <script>
-import xHeader from "vux/src/components/x-header/index.vue"
-import sticky from "vux/src/components/sticky/index.vue"
 import flexbox from "vux/src/components/flexbox/index.vue"
 import flexboxItem from "vux/src/components/flexbox-item/index.vue"
 
 module.exports = {
     name: 'taskDetail',
     components: {
-        "sticky": sticky,
-        "x-header": xHeader,
         "flexbox": flexbox,
         "flexbox-item": flexboxItem
     },
     route: {
         data: function(transition) {
-            this.$root.toastType = -1;
-            return this.$http.get(
-                this.$root.CLIENT_URL.taskDetail,
-                {
-                    params:{
-                        adid: this.$route.params.adid
-                    }
-                }).then(
-                function (response) {
-                    var getData = response.json(response.data);
-                    if (getData.c === 0) {
-                        this.data = getData.d;
-                        this.$root.endLoading();
-                    } else {
-                        this.$root.toastStart("反正我获取不到！哼╭(╯^╰)╮");
-                        this.$root.giveUpTransition(transition)
-                    }
-                },
-                function (response) {
-                    this.$root.toastStart("反正我获取不到！哼╭(╯^╰)╮");
-                    this.$root.giveUpTransition(transition)
-                });
+            // this.$root.toastType = -1;
+            // return this.$http.get(
+            //     this.$root.CLIENT_URL.taskDetail,
+            //     {
+            //         params:{
+            //             adid: this.$route.params.adid
+            //         }
+            //     }).then(
+            //     function (response) {
+            //         var getData = response.json(response.data);
+            //         if (getData.c === 0) {
+            //             this.data = getData.d;
+            //             this.$root.endLoading();
+            //         } else {
+            //             this.$root.toastStart("反正我获取不到！哼╭(╯^╰)╮");
+            //             this.$root.giveUpTransition(transition)
+            //         }
+            //     },
+            //     function (response) {
+            //         this.$root.toastStart("反正我获取不到！哼╭(╯^╰)╮");
+            //         this.$root.giveUpTransition(transition)
+            //     });
+              var _this = this;
+              this.$root.toastType = -1;
+            return new Promise(
+                function(resolve, reject){
+                    _this.$http.get(
+                    // _this.$root.CLIENT_URL.taskDetail,
+                    _this.$root.CLIENT_URL + "/fuck",
+                    {
+                        params:{
+                            adid: _this.$route.params.adid,
+                        }
+                    }).then(
+                    function (response) {
+                        if (response.data.c == 0) {
+                            resolve(response.data)
+                        } else {
+                            reject("c!=0")
+                        }
+                    },
+                    function (response) {
+                        reject(response.data)
+                    });
+                }
+            ).then(function(data){
+                console.log(data)
+            }).catch(function(err){
+                console.log(err);
+                transition.abort()
+            });
+            
         },
         waitForData: true
     },

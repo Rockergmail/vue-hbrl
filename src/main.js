@@ -24,29 +24,34 @@ import Home from './components/Home'
 	router.map({
 		// 首页
 		'/': {
+			title: "红包日历",
 			component: Vue.extend(Home)
 		},
 		// 限时任务
 		'/taskList/:tasktype': {
 			name: "list",
+			title: ["联盟任务", "限时任务", "深度任务"],
 			component: function(resolve){
 				require(['./components/TaskList.vue'], resolve);
 			}
 		},
 		'/taskDetail/:tasktype/:adid': {
 			name: "detail",
+			title: "任务详情",
 			component: function(resolve){
 				require(['./components/TaskDetail.vue'], resolve);
 			}
 		},
 		// 个人信息
 		'/userinfo': {
+			title: "个人中心",
 			component: function(resolve){
 				require(['./components/UserInfo.vue'], resolve);
 			}
 		},
 		// 提现中心
 		'/withdraw': {
+			title: "提现中心",
 			component: function(resolve){
 				require(['./components/Withdraw.vue'], resolve);
 			}
@@ -58,27 +63,31 @@ import Home from './components/Home'
 		// },
 		// 邀请奖励
 		'/invite': {
+			title: "邀请奖励",
 			component: function(resolve){
 				require(['./components/Invite.vue'], resolve);
 			}
 		},
 		'/invite/qrcode': {
+			title: "扫码收徒",
 			component: function(resolve){
 				require(['./components/InviteQrcode.vue'], resolve);
 			}
 		},
 		'/invite/link': {
+			title: "链接收徒",
 			component: function(resolve){
 				require(['./components/InviteLink.vue'], resolve);
 			}
 		},
 		'/invite/list': {
+			title: "徒弟列表",
 			component: function(resolve){
 				require(['./components/InviteList.vue'], resolve);
 			}
 		},
-		// 收入明细W
 		'/income': {
+			title: "收入明细",
 			component: function(resolve){
 				require(['./components/Income.vue'], resolve);
 			}
@@ -132,7 +141,7 @@ import Home from './components/Home'
 
 
 		console.log(request.url + " " + router.app.CLIENT_URL.login + " " + router.app.CLIENT_URL.ping)
-		if (!router.app.firstPage && ((request.url != router.app.CLIENT_URL.login) || (request.url != router.app.CLIENT_URL.ping))) {
+		if (!router.app.firstPage) {
 			router.app.startLoading();
 		} else {
 			console.log("no loading")
@@ -149,7 +158,11 @@ import Home from './components/Home'
 
 		next(function(response){
 			clearTimeout(timeout);
-			response.data = response.json(response.data);
+			try {
+				response.data = response.json(response.data);
+			} catch (e) {
+				response.data = response.data
+			}
 			router.app.endLoading();
 		})
 	});

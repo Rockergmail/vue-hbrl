@@ -32,12 +32,12 @@
 </style>
     
 <div id="taskList">
-<sticky id="fuckme">
+<!-- <sticky id="fuckme">
     <x-header
         :left-options="{showBack:true}"
         :right-options="{showMore:false,showRefresh:true}"
     >限时任务</x-header>
-</sticky>
+</sticky> -->
 
 <div v-if="nomission">暂时没有任务哦～</div>
 
@@ -70,7 +70,7 @@
 
     <!-- 限时任务 -->
     <template v-else>
-    <flexbox :gutter="0" class="mission-item" v-for="m in data.d" @click="goPlay(m.id)">
+    <flexbox :gutter="0" class="mission-item" v-for="m in userData.d" @click="goPlay(m.id)">
         <flexbox-item :span="2/10" class="item-icon">
             <img :src="m.iconUrl" width="80%">
         </flexbox-item>
@@ -98,7 +98,7 @@
 </section>
 
 <!--pullup slot-->
-<div v-show="data.d && !loadall" slot="pullup" class="xs-plugin-pullup-container xs-plugin-pullup-up" style="position: absolute; width: 100%; height: 40px; line-height:40px; bottom: -40px; text-align: center;">
+<div v-show="userData.d && !loadall" slot="pullup" class="xs-plugin-pullup-container xs-plugin-pullup-up" style="position: absolute; width: 100%; height: 40px; line-height:40px; bottom: -40px; text-align: center;">
   <span v-show="pullupStatus === 'default' || pullupStatus === 'up'">上拉加载更多</span>
   <span v-show="pullupStatus === 'loading'"><spinner type="ios-small"></spinner></span>
 </div>
@@ -110,34 +110,26 @@
 </template>
 
 <script>
-import xHeader from "vux/src/components/x-header/index.vue"
-import sticky from "vux/src/components/sticky/index.vue"
 import flexbox from "vux/src/components/flexbox/index.vue"
 import flexboxItem from "vux/src/components/flexbox-item/index.vue"
 import scroller from "vux/src/components/scroller/index.vue"
 import spinner from "vux/src/components/spinner"
 import toast from 'vux/src/components/toast'
+import {routerDataMixin} from './common/myMixin'
 
 module.exports = {
     name: 'taskList',
+    mixins: [routerDataMixin],
     components: {
-        "sticky": sticky,
-        "x-header": xHeader,
         "scroller": scroller,
         "flexbox": flexbox,
         "flexbox-item": flexboxItem,
         "spinner": spinner,
         "toast": toast
     },
-    route: {
-        data: function(transition) {
-            return this.getUserData(transition)
-        },
-        waitForData: true
-    },
     data:function () {
         return {
-            data: {d:[]},
+            userData: {d:[]},
             page: 1,
             amount: 10,
             tasktype: this.$route.params.tasktype,
@@ -145,9 +137,54 @@ module.exports = {
             loadall: false, // 是否加载完毕
             nomission: false, // 没有任务
             pullupStatus: 'default',
+            ajax: {
+                url: this.$root.CLIENT_URL.taskList,
+                method: 'GET',
+                params: {
+                    page: this.page,
+                    type: this.tasktype
+                    // amount: this.amount
+                    // type为0是普通任务，1为限时任务，2为深度任务
+                },
+                successCb: this.successCb,
+                failCb: this.failCb
+            }
         }
     },
     methods: {
+        successCb: function(response){
+            console.log(this.page)
+            if (response.data.c === 0) {
+                console.log(response.data.d);
+                // 有任务数据返回
+                if (response.data.d.length != 0) {
+                    this.userData.d = this.userData.d.concat(response.data.d);
+                    this.$nextTick(function(){
+                        this.$broadcast('scroller:reset', this.$refs.scroller.uuid)
+                    this.page++;
+                    })
+                // 无任务数据返回
+                } else {
+                    if (this.page == 1) {
+                        // 没有任务的提示
+                        this.nomission = true
+                    } else {
+                        // 任务加载完毕的提示
+                        this.loadall = true;
+                        this.$root.toastStart("加载完毕");
+                    }
+                }
+            // 返回数据状态不正常
+            } else {
+                reject("c != 0");
+            }
+            this.flag = true;
+            this.$broadcast('pullup:reset', this.$refs.scroller.uuid);
+        },
+        failCb: function(err){
+            this.$broadcast('pullup:reset', this.$refs.scroller.uuid)
+            this.flag = true
+        },
         changeType: function (type) {
             this.currentType = type;
         },
@@ -206,64 +243,7 @@ module.exports = {
                  })
             }
             
-        },
-        getUserData: function(transition) {
-            return this.$http.get(
-                this.$root.CLIENT_URL.taskList,
-                {
-                    params:{
-                        page: this.page,
-                        type: this.tasktype,
-                        // amount: this.amount
-                        // type为0是普通任务，1为限时任务，2为深度任务
-                    }
-                    // ,
-                    // _timeout: 500
-                }).then(
-                function (response) {
-                    var getData = response.json(response.data)
-                    this.$root.endLoading()
-                    // 返回数据状态正常
-                    if (getData.c === 0) {
-                        // 有任务数据返回
-                        if (getData.d.length != 0) {
-                            this.data.d = this.data.d.concat(getData.d)
-                            this.$nextTick(function(){
-                                this.$broadcast('scroller:reset', this.$refs.scroller.uuid)
-                            this.page++;
-                            })
-                        // 无任务数据返回
-                        } else {
-                            if (this.page == 1) {
-                                // 没有任务的提示
-                                this.nomission = true
-                            } else {
-                                // 任务加载完毕的提示
-                                this.loadall = true;
-                                this.$root.toastStart("加载完毕");
-                            }
-                        }
-                    // 返回数据状态不正常
-                    } else {
-                        this.$root.toastStart("c!=0:一大波用户在涌入，请稍后再试！");
-                        this.$root.giveUpTransition(transition)
-                    }
-                    this.flag = true;
-                    this.$broadcast('pullup:reset', this.$refs.scroller.uuid);
-                },
-                function (response) {
-                    this.$root.giveUpTransition(transition)
-                    if (response.statusText="request timeout") {
-                        this.$root.toastStart("timeout:一大波用户在涌入，请稍后再试！");
-                    } else {
-                        this.$root.toastStart("error:一大波用户在涌入，请稍后再试！");
-                    }
-                    this.$broadcast('pullup:reset', this.$refs.scroller.uuid)
-                    this.flag = true
-                });
         }
-    },
-    ready: function() {
     },
     computed: {
         listHeight: function () {
